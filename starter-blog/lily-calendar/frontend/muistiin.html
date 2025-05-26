@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <header>
+        <nav>
+			<ul>
+				<li><a href="index.html">Kalenteri</a></li>
+				<li><a href="muistiin.html">Muistiinpanot</a></li>
+			</ul>
+    </header>
+    <div id="main-container">
+
+        <div id="kuukausi-ohjaimet">
+				<button id="edellinenKuukausi">Edellinen</button>
+				<span id="kalenteriKuukausiOsoite"></span>
+				<button id="seuraavaKuukausi">Seuraava</button>
+				<button id="vaihdaNakemys" type="button">Viikkonäkymä</button>
+			</div>
+
+			<div id="kuukausi"></div>
+
+        <div id="kaksi-column">
+
+            <div id="muistiin-container">
+                <h1>Muistiinpanot</h1>
+                <div id="muistiin"></div>
+                <textarea id="muistiin-teksti" placeholder="Kirjoita muistiinpanosi tähän..."></textarea>
+                <div id="muistiin-kategoriat">
+                    <label for="muistiin-kategoria">Aikajana</label>
+                    <select id="muistiin-kategoria">
+                        <option value="m_paiva">Päivälle</option>
+                        <option value="m_viikko">Viikolle</option>
+                        <option value="m_kuukausi">Kuukaudelle</option>
+                        <option value="m_vuosi">Vuodelle</option>
+                    </select>
+                    <input type="date" id="muistiin-paiva" style="margin-top:8px;">
+                    <button id="openMuistiinModalNappi" type="button">Lisää muistiin</button>
+                </div>
+
+            <div id="to-d0-container">
+                <h1>Tehtävälista</h1>
+                <div id="to-do"></div>
+                <textarea id="to-do-teksti" placeholder="Kirjoita tehtäväsi tähän..."></textarea>
+                <button id="openToDoModalNappi" type="button">Lisää tehtävä</button>
+                <button id="deleteAllTodo" type="button">Poista kaikki</button>
+                <button id="finishAllTodo" type="button">Merkitse kaikki valmiiksi</button>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="script/muistiinpanot.js"></script>
+    <script src="script/ui/kuukausi_ui.js"></script>
+    <script src="script/ui/viikko_ui.js"></script>
+</body>
+    <link rel="stylesheet" href="style/perusrakennus.css">
+</html>

@@ -1,0 +1,6 @@
+:root {
+    --taustavari: white;
+    --modal-taustavari: rgba(0, 0, 0, 0.5);
+    --border: 1px solid black;
+    --nykyinen-paiva-solu: #ffffb9;
+}
