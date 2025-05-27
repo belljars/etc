@@ -1,0 +1,8 @@
+# Python virtual environment
+backend/.venv/
+
+# Python bytecode cache
+backend/__pycache__/
+backend/**/*.pyc
+backend/**/*.pyo
+backend/**/__pycache__/
