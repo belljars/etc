@@ -12,13 +12,14 @@
         </header>
         <div id="main-container">
             <div id="kuukausi-ohjaimet">
-                <button id="edellinenKuukausi">Edellinen</button>
+                <button id="edellinenKuukausi"></button>
                 <span id="kalenteriKuukausiOsoite"></span>
-                <button id="seuraavaKuukausi">Seuraava</button>
+                <button id="seuraavaKuukausi"></button>
                 <button id="vaihdaNakemys" type="button">Viikkonäkymä</button>
             </div>
             <div id="kuukausi"></div>
             <button id="openTapahtumaModalNappi" type="button">Lisää tapahtuma</button>
+
             <div id="tapahtumaModal" class="modal" style="display:none;">
                 <div class="modal-sisalto">
                     <span class="close" id="closetapahtumaModal">&times;</span>
@@ -100,7 +101,7 @@
                 </div>
             </div>
         </div>
-        <div>
+        <div id="column-2">
             
                 <div id="tapahtuma-container">
                     <h3>Tapahtumat</h3>
@@ -132,14 +133,24 @@
                             </select>
                             <label for="suodataAvainsanat">Hakusana:</label>
                             <input type="text" id="suodataAvainsanat" placeholder="Nimi tai kuvaus">
+                            <label for="pikasuodatin">Pikasuodatin:</label>
+                            <select id="pikasuodatin">
+                                <option value="">Ei pikasuodatusta</option>
+                                <option value="tanaan">Tänään</option>
+                                <option value="tämäviikko">Tällä viikolla</option>
+                                <option value="tämäkuukausi">Tässä kuussa</option>
+                                <option value="menneetX">Viimeiset X päivää</option>
+                                <option value="tulevatX">Seuraavat X päivää</option>
+                            </select>
+                            <input type="number" id="pikasuodatinX" min="1" value="5" style="width:60px;display:none;" />
                         </div>
                     </details>
-                    <div>
+                    <div id="luokkaukset-container">
                         <h3>Luokkaukset</h3>
                         <ul id="kategoriaLista" style="list-style:none"></ul>
                     </div>
                 </div>
-            </div>
+        </div>
 
             
     </body>
@@ -149,7 +160,6 @@
     <script src="script/tapahtumat.js"></script>
     <script src="script/tapahtuma_lomake.js"></script>
     <script src="script/tapahtuma_lista.js"></script>
-    <script src="script/tarkeys.js"></script>
     <script src="script/nyky_paivamaara.js"></script>
     <script src="script/muistiinpanot.js"></script>
     <!-- UI -->
@@ -158,5 +168,4 @@
     <script src="script/muistiinpanot.js"></script>
     <!-- tyylit -->
     <link rel="stylesheet" href="style/perusrakennus.css">
-    <link rel="stylesheet" href="style/perus.css">
 </html>

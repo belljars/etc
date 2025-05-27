@@ -47,11 +47,20 @@ window.renderviikko = function(date) {
     html += '</div></div>';
 
     kuukausiDiv.innerHTML = html;
-    const viikkoNumber = Math.ceil(
-        ((monday - new Date(monday.getFullYear(), 0, 1)) / 86400000 + new Date(monday.getFullYear(), 0, 1).getDay() + 1) / 7
-    );
-    monthLabel.textContent = `Viikko ${viikkoNumber} (${monday.getFullYear()}-${String(monday.getMonth() + 1).padStart(2, '0')})`;
 
+    function getWeekNumber(date) {
+        const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+        const dayNum = d.getUTCDay() || 7;
+        d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+        const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+        const weekNum = Math.ceil((((d - yearStart) / 86400000) + 1)/7);
+        return weekNum;
+    }
+
+    const viikkoNumber = getWeekNumber(monday);
+    monthLabel.textContent = `Viikko ${viikkoNumber}, ${monday.getFullYear()}`;
+
+    if (typeof setNavigationLabels === "function") setNavigationLabels(date, 'viikko');
 };
 
 function renderWeekCalendar(containerId, events) {

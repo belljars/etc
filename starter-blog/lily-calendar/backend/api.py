@@ -6,8 +6,6 @@ from typing import List, Optional
 
 import tapahtuma as tapahtuma
 import toistuva
-import muistiinpanot
-import todo
 
 
 app = FastAPI()
@@ -19,9 +17,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-app.include_router(muistiinpanot.router)
-app.include_router(todo.todo_router)
 
 class TapahtumaModel(BaseModel):
     nimi: str

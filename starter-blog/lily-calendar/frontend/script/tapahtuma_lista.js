@@ -4,13 +4,46 @@ function getFilters() {
         to: document.getElementById('suodataPaivamaaraan').value,
         category: document.getElementById('suodatinKategoria').value,
         importance: document.getElementById('suodataTarkeys').value,
-        keyword: document.getElementById('suodataAvainsanat').value.trim().toLowerCase()
+        keyword: document.getElementById('suodataAvainsanat').value.trim().toLowerCase(),
+        quick: document.getElementById('pikasuodatin').value,
+        quickX: parseInt(document.getElementById('pikasuodatinX').value, 10) || 1
     };
 }
 
 function filtertapahtumat(tapahtumat, filters) {
+    const now = new Date();
+    let todayStr = now.toISOString().slice(0, 10);
+
+    let start, end;
+    if (filters.quick === "tanaan") {
+        start = todayStr;
+        end = todayStr;
+    } else if (filters.quick === "tämäviikko") {
+        const day = now.getDay() === 0 ? 6 : now.getDay() - 1;
+        const monday = new Date(now);
+        monday.setDate(now.getDate() - day);
+        const sunday = new Date(monday);
+        sunday.setDate(monday.getDate() + 6);
+        start = monday.toISOString().slice(0, 10);
+        end = sunday.toISOString().slice(0, 10);
+    } else if (filters.quick === "tämäkuukausi") {
+        const first = new Date(now.getFullYear(), now.getMonth(), 1);
+        const last = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+        start = first.toISOString().slice(0, 10);
+        end = last.toISOString().slice(0, 10);
+    } else if (filters.quick === "menneetX") {
+        const past = new Date(now);
+        past.setDate(now.getDate() - filters.quickX + 1);
+        start = past.toISOString().slice(0, 10);
+        end = todayStr;
+    } else if (filters.quick === "tulevatX") {
+        const future = new Date(now);
+        future.setDate(now.getDate() + filters.quickX - 1);
+        start = todayStr;
+        end = future.toISOString().slice(0, 10);
+    }
+
     return tapahtumat.filter(e => {
-        // Fix: compare dates as strings in YYYY-MM-DD format
         if (filters.from && e.alku_pvm < filters.from) return false;
         if (filters.to && e.loppu_pvm > filters.to) return false;
         if (filters.category && e.luokkaus !== filters.category) return false;
@@ -19,6 +52,9 @@ function filtertapahtumat(tapahtumat, filters) {
             const name = (e.nimi || "").toLowerCase();
             const desc = (e.kuvaus || "").toLowerCase();
             if (!name.includes(filters.keyword) && !desc.includes(filters.keyword)) return false;
+        }
+        if (filters.quick && start && end) {
+            if (e.loppu_pvm < start || e.alku_pvm > end) return false;
         }
         return true;
     });
@@ -138,5 +174,18 @@ function filterAndRender() {
 document.getElementById('suodatinKategoria').addEventListener('change', filterAndRender);
 document.getElementById('suodataTarkeys').addEventListener('change', filterAndRender);
 document.getElementById('suodataAvainsanat').addEventListener('input', filterAndRender);
+document.getElementById('suodataPaivamaarasta').addEventListener('input', filterAndRender);
+document.getElementById('suodataPaivamaaraan').addEventListener('input', filterAndRender);
+document.getElementById('pikasuodatin').addEventListener('change', function() {
+    const val = this.value;
+    const xInput = document.getElementById('pikasuodatinX');
+    if (val === 'menneetX' || val === 'tulevatX') {
+        xInput.style.display = '';
+    } else {
+        xInput.style.display = 'none';
+    }
+    filterAndRender();
+});
+document.getElementById('pikasuodatinX').addEventListener('input', filterAndRender);
 document.getElementById('suodataPaivamaarasta').addEventListener('change', filterAndRender);
 document.getElementById('suodataPaivamaaraan').addEventListener('change', filterAndRender);
