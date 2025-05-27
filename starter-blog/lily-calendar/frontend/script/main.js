@@ -2,7 +2,7 @@ let nykyisetLuokkaukset = [];
 let kaikkiTapahtumat = [];
 
 async function haeLuokkaukset() {
-    const response = await fetch('http://localhost:8000/luokkaukset');
+    const response = await fetch('http://localhost:8080/luokkaukset');
     nykyisetLuokkaukset = await response.json();
     window.paivitaLuokkausLista();
     window.paivitaLuokkausDatalist();
@@ -10,7 +10,7 @@ async function haeLuokkaukset() {
 }
 
 async function haeTapahtumat() {
-    const response = await fetch('http://localhost:8000/tapahtumat');
+    const response = await fetch('http://localhost:8080/tapahtumat');
     window.kaikkiTapahtumat = await response.json();
     window.naytaTulevatJaKaynnissa();
     if (typeof renderkuukausi === "function") {
@@ -19,7 +19,7 @@ async function haeTapahtumat() {
 }
 
 async function lisaaTapahtuma(data) {
-    return await fetch('http://localhost:8000/tapahtumat', {
+    return await fetch('http://localhost:8080/tapahtumat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -27,7 +27,7 @@ async function lisaaTapahtuma(data) {
 }
 
 async function muokkaaTapahtuma(id, data) {
-    return await fetch(`http://localhost:8000/tapahtumat/${id}`, {
+    return await fetch(`http://localhost:8080/tapahtumat/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -35,7 +35,7 @@ async function muokkaaTapahtuma(id, data) {
 }
 
 async function poistaTapahtuma(id) {
-    return await fetch(`http://localhost:8000/tapahtumat/${id}`, { method: 'DELETE' });
+    return await fetch(`http://localhost:8080/tapahtumat/${id}`, { method: 'DELETE' });
 }
 
 

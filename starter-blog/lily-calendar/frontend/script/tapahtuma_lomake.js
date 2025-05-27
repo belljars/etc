@@ -24,7 +24,7 @@ document.getElementById('tapahtumaLomake').addEventListener('submit', async func
             data.viikonpaivat = Array.from(document.querySelectorAll('#viikonpaivat_valinta input:checked')).map(cb => parseInt(cb.value, 10));
         }
 
-        const response = await fetch('http://localhost:8000/toistuvat_tapahtumat', {
+        const response = await fetch('http://localhost:8080/toistuvat_tapahtumat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
@@ -106,7 +106,7 @@ document.getElementById('editTapahtumaLomake').addEventListener('submit', async 
     const editAll = this.dataset.editAll === "1";
     const sarjaId = this.dataset.sarjaId;
     if (editAll && sarjaId) {
-        await fetch(`http://localhost:8000/tapahtumat/sarja/${sarjaId}`, {
+        await fetch(`http://localhost:8080/tapahtumat/sarja/${sarjaId}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)

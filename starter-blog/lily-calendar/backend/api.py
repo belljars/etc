@@ -7,7 +7,6 @@ from typing import List, Optional
 import tapahtuma as tapahtuma
 import toistuva
 
-
 app = FastAPI()
 
 app.add_middleware(
@@ -198,4 +197,6 @@ def detach_occurrence(event_id: str):
         cur.execute("UPDATE tapahtumat SET sarja_id = NULL WHERE id = ?", (event_id,))
         conn.commit()
     return {"detached": event_id}
+
+print("Backend is starting...")
 

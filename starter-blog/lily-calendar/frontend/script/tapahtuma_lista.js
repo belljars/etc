@@ -123,15 +123,15 @@ function rendertapahtumat(tapahtumat, skipFilters = false) {
                     "1"
                 );
                 if (choice === "1") {
-                    await fetch(`http://localhost:8000/tapahtumat/${id}`, { method: 'DELETE' });
+                    await fetch(`http://localhost:8080/tapahtumat/${id}`, { method: 'DELETE' });
                 } else if (choice === "2") {
-                    await fetch(`http://localhost:8000/tapahtumat/sarja/${event.sarja_id}`, { method: 'DELETE' });
+                    await fetch(`http://localhost:8080/tapahtumat/sarja/${event.sarja_id}`, { method: 'DELETE' });
                 } else if (choice === "3") {
-                    await fetch(`http://localhost:8000/tapahtumat/${id}/detach`, { method: 'POST' });
-                    await fetch(`http://localhost:8000/tapahtumat/${id}`, { method: 'DELETE' });
+                    await fetch(`http://localhost:8080/tapahtumat/${id}/detach`, { method: 'POST' });
+                    await fetch(`http://localhost:8080/tapahtumat/${id}`, { method: 'DELETE' });
                 }
             } else {
-                await fetch(`http://localhost:8000/tapahtumat/${id}`, { method: 'DELETE' });
+                await fetch(`http://localhost:8080/tapahtumat/${id}`, { method: 'DELETE' });
             }
             await haeLuokkaukset();
             await haeTapahtumat();
@@ -155,7 +155,7 @@ function rendertapahtumat(tapahtumat, skipFilters = false) {
                     } else if (choice === "2") {
                         window.naytaMuokkausLomake(event, true);
                     } else if (choice === "3") {
-                        fetch(`http://localhost:8000/tapahtumat/${id}/detach`, { method: 'POST' })
+                        fetch(`http://localhost:8080/tapahtumat/${id}/detach`, { method: 'POST' })
                           .then(() => window.naytaMuokkausLomake({ ...event, sarja_id: null }, false));
                     }
                 } else {

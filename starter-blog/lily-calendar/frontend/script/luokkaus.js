@@ -12,7 +12,7 @@ window.paivitaLuokkausLista = function() {
         editNappi.onclick = async () => {
             const uusiNimi = prompt('Anna uusi nimi luokkaukselle:', cat);
             if (uusiNimi && uusiNimi !== cat) {
-                await fetch(`http://localhost:8000/luokkaukset/${encodeURIComponent(cat)}`, {
+                await fetch(`http://localhost:8080/luokkaukset/${encodeURIComponent(cat)}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ new_name: uusiNimi })
@@ -29,7 +29,7 @@ window.paivitaLuokkausLista = function() {
         delNappi.textContent = 'Poista';
         delNappi.onclick = async () => {
             if (confirm(`Poistetaanko luokkaus "${cat}" kaikista tapahtumista?`)) {
-                await fetch(`http://localhost:8000/luokkaukset/${encodeURIComponent(cat)}`, {
+                await fetch(`http://localhost:8080/luokkaukset/${encodeURIComponent(cat)}`, {
                     method: 'DELETE'
                 });
                 await haeLuokkaukset();
