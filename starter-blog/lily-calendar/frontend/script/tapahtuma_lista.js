@@ -91,7 +91,12 @@ function rendertapahtumat(tapahtumat, skipFilters = false) {
                 kesto = `${hours}h ${minutes}min`;
             }
         }
-        let html = `<div class="tapahtuma-lista-item" data-id="${e.id}">
+        // Add class based on importance
+        let importanceClass = "tapahtuma-ei-tarkea";
+        if (e.tarkeys === 1) importanceClass = "tapahtuma-tarkea";
+        if (e.tarkeys === 2) importanceClass = "tapahtuma-erittain-tarkea";
+
+        let html = `<div class="tapahtuma-lista-item ${importanceClass}" data-id="${e.id}">
             <strong>${e.nimi}</strong> (${e.alku_pvm})<br>`;
         if (kesto) {
             html += `<em>Kesto:</em> ${kesto}<br>`;

@@ -30,12 +30,15 @@ window.renderviikko = function(date) {
         if (window.kaikkiTapahtumat) {
             const paivattr = day.toISOString().slice(0, 10);
             const tapahtumat = window.kaikkiTapahtumat.filter(ev => ev.alku_pvm === paivattr);
-            tapahtumatHtml = tapahtumat.map(ev =>
-                `<span class="viikko-event">
+            tapahtumatHtml = tapahtumat.map(ev => {
+                let importanceClass = "tapahtuma-ei-tarkea";
+                if (ev.tarkeys === 1) importanceClass = "tapahtuma-tarkea";
+                if (ev.tarkeys === 2) importanceClass = "tapahtuma-erittain-tarkea";
+                return `<span class="viikko-event ${importanceClass}">
                     ${ev.nimi}
                     ${ev.kuvaus ? `<div class="viikko-event-desc">${ev.kuvaus}</div>` : ''}
-                </span>`
-            ).join('');
+                </span>`;
+            }).join('');
         }
 
         const paivattr = day.toISOString().slice(0, 10);

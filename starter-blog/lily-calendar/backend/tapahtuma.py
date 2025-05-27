@@ -5,7 +5,6 @@ from fastapi import FastAPI
 import uuid
 from pydantic import BaseModel
 
-
 DB_FILE = 'tapahtumat.db'
 app = FastAPI()
 
