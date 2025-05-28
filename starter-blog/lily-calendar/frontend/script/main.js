@@ -48,6 +48,9 @@ async function alusta() {
     await haeLuokkaukset();
     await haeTapahtumat();
     await haeJuhlaPaivat();
+    if (typeof renderkuukausi === "function") {
+        renderkuukausi(currentMonth, window.kaikkiTapahtumat);
+    }
 }
 
 alusta();

@@ -27,9 +27,17 @@ function renderkuukausi(date, tapahtumat = window.kaikkiTapahtumat || []) {
 
         let juhlaHtml = '';
         if (window.kaikkiJuhlaPaivat) {
-            const juhla = window.kaikkiJuhlaPaivat.find(j => j.pvm === dateStr);
+            // Get current cell's month and day
+            const [cellYear, cellMonth, cellDay] = dateStr.split('-');
+            // Find juhlapäivä that matches either full date or recurring (0001-...)
+            const juhla = window.kaikkiJuhlaPaivat.find(j => {
+                if (j.pvm === dateStr) return true;
+                // Recurring: year is 0001, but month and day match
+                const [jYear, jMonth, jDay] = j.pvm.split('-');
+                return jYear === '0001' && jMonth === cellMonth && jDay === cellDay;
+            });
             if (juhla) {
-                juhlaHtml = `<div class="juhla-paiva" title="${juhla.nimi}">🎉 ${juhla.nimi}</div>`;
+                juhlaHtml = `<div class="juhla-paiva" title="${juhla.nimi}">${juhla.nimi}</div>`;
             }
         }
 
@@ -133,5 +141,3 @@ document.getElementById('vaihdaNakemys').onclick = () => {
 		document.getElementById('vaihdaNakemys').textContent = 'Viikkonäkymä';
 	}
 };
-
-renderkuukausi(currentMonth, window.kaikkiTapahtumat || []);

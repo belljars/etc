@@ -17,11 +17,6 @@ html, body {
     min-height: 100vh;
 }
 
-html {
-    box-sizing: border-box;
-    overflow: hidden;
-}
-
 header {
     padding: 16px;
     border-bottom: 2px solid var(--border);
@@ -429,4 +424,12 @@ input, select, textarea {
 select:focus {
     outline: none;
     background: var(--main-bg);
+}
+
+.juhla-paiva {
+    color: #c00;
+    font-weight: bold;
+    font-size: 0.9em;
+    margin-top: 2px;
+    display: block;
 }

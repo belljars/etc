@@ -26,9 +26,24 @@ window.renderviikko = function(date) {
             day.getMonth() === tanaan.getMonth() &&
             day.getFullYear() === tanaan.getFullYear();
 
+        const paivattr = day.toISOString().slice(0, 10);
+
+        let juhlaHtml = '';
+        if (window.kaikkiJuhlaPaivat) {
+            const [cellYear, cellMonth, cellDay] = paivattr.split('-');
+            const juhla = window.kaikkiJuhlaPaivat.find(j => {
+                if (j.pvm === paivattr) return true;
+                const [jYear, jMonth, jDay] = j.pvm.split('-');
+                return jYear === '0001' && jMonth === cellMonth && jDay === cellDay;
+            });
+            if (juhla) {
+                juhlaHtml = `<div class="juhla-paiva" title="${juhla.nimi}">${juhla.nimi}</div>`;
+            }
+        }
+
+        // User events
         let tapahtumatHtml = '';
         if (window.kaikkiTapahtumat) {
-            const paivattr = day.toISOString().slice(0, 10);
             const tapahtumat = window.kaikkiTapahtumat.filter(ev => ev.alku_pvm === paivattr);
             tapahtumatHtml = tapahtumat.map(ev => {
                 let importanceClass = "tapahtuma-ei-tarkea";
@@ -41,9 +56,9 @@ window.renderviikko = function(date) {
             }).join('');
         }
 
-        const paivattr = day.toISOString().slice(0, 10);
         html += `<div class="viikko-paiva-solu${istanaan ? ' viikko-tanaan' : ''}" data-date="${paivattr}">
             <div class="viikko-date">${day.getDate()}.${day.getMonth() + 1}.</div>
+            ${juhlaHtml}
             ${tapahtumatHtml}
         </div>`;
     }
@@ -134,16 +149,42 @@ function renderWeekView(containerId, days, events) {
     });
 
     days.forEach((day, idx) => {
-        const cell = document.createElement('div');
-        cell.className = 'viikko-grid-cell';
+        const paivattr = day.toISOString().slice(0, 10);
+        let cellHtml = '';
 
-        events.filter(ev => ev.dayIndex === idx).forEach(ev => {
-            const evDiv = document.createElement('div');
-            evDiv.className = 'viikko-event';
-            evDiv.textContent = ev.title;
-            cell.appendChild(evDiv);
-        });
-        grid.appendChild(cell);
+        // Juhlapäivä logic
+        let juhlaHtml = '';
+        if (window.kaikkiJuhlaPaivat) {
+            const [cellYear, cellMonth, cellDay] = paivattr.split('-');
+            const juhla = window.kaikkiJuhlaPaivat.find(j => {
+                if (j.pvm === paivattr) return true;
+                const [jYear, jMonth, jDay] = j.pvm.split('-');
+                return jYear === '0001' && jMonth === cellMonth && jDay === cellDay;
+            });
+            if (juhla) {
+                juhlaHtml = `<div class="juhla-paiva" title="${juhla.nimi}">${juhla.nimi}</div>`;
+            }
+        }
+
+        // User events
+        if (window.kaikkiTapahtumat) {
+            const tapahtumat = window.kaikkiTapahtumat.filter(ev => ev.alku_pvm === paivattr);
+            cellHtml += tapahtumat.map(ev => {
+                let importanceClass = "tapahtuma-ei-tarkea";
+                if (ev.tarkeys === 1) importanceClass = "tapahtuma-tarkea";
+                if (ev.tarkeys === 2) importanceClass = "tapahtuma-erittain-tarkea";
+                return `<span class="viikko-event ${importanceClass}">
+                    ${ev.nimi}
+                    ${ev.kuvaus ? `<div class="viikko-event-desc">${ev.kuvaus}</div>` : ''}
+                </span>`;
+            }).join('');
+        }
+
+        html += `<div class="viikko-paiva-solu${istanaan ? ' viikko-tanaan' : ''}" data-date="${paivattr}">
+            <div class="viikko-date">${day.getDate()}.${day.getMonth() + 1}.</div>
+            ${juhlaHtml}
+            ${tapahtumatHtml}
+        </div>`;
     });
 
     container.appendChild(grid);
