@@ -6,6 +6,7 @@ from typing import List, Optional
 
 import tapahtuma as tapahtuma
 import toistuva
+from juhla_paivat import hae_juhla_paivat
 
 app = FastAPI()
 
@@ -197,6 +198,12 @@ def detach_occurrence(event_id: str):
         cur.execute("UPDATE tapahtumat SET sarja_id = NULL WHERE id = ?", (event_id,))
         conn.commit()
     return {"detached": event_id}
+
+@app.get("/juhlapäivät")
+def get_juhlapäivät():
+    # Returns a list of dicts: [{"pvm": "YYYY-MM-DD", "nimi": "Juhlapäivä"}]
+    paivat = hae_juhla_paivat()
+    return [{"pvm": pvm, "nimi": nimi} for pvm, nimi in paivat]
 
 print("Backend is starting...")
 

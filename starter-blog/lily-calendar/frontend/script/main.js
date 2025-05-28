@@ -1,5 +1,6 @@
 let nykyisetLuokkaukset = [];
 let kaikkiTapahtumat = [];
+window.kaikkiJuhlaPaivat = [];
 
 async function haeLuokkaukset() {
     const response = await fetch('http://localhost:8080/luokkaukset');
@@ -38,11 +39,15 @@ async function poistaTapahtuma(id) {
     return await fetch(`http://localhost:8080/tapahtumat/${id}`, { method: 'DELETE' });
 }
 
-
+async function haeJuhlaPaivat() {
+    const response = await fetch('http://localhost:8080/juhlapäivät');
+    window.kaikkiJuhlaPaivat = await response.json();
+}
 
 async function alusta() {
     await haeLuokkaukset();
     await haeTapahtumat();
+    await haeJuhlaPaivat();
 }
 
 alusta();

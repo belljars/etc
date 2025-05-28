@@ -25,6 +25,14 @@ function renderkuukausi(date, tapahtumat = window.kaikkiTapahtumat || []) {
             year === tanaan.getFullYear();
         const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
 
+        let juhlaHtml = '';
+        if (window.kaikkiJuhlaPaivat) {
+            const juhla = window.kaikkiJuhlaPaivat.find(j => j.pvm === dateStr);
+            if (juhla) {
+                juhlaHtml = `<div class="juhla-paiva" title="${juhla.nimi}">🎉 ${juhla.nimi}</div>`;
+            }
+        }
+
         const hasEvent = tapahtumat && tapahtumat.some(ev => ev.alku_pvm === dateStr);
 
         let muistiinDot = '';
@@ -40,6 +48,9 @@ function renderkuukausi(date, tapahtumat = window.kaikkiTapahtumat || []) {
         }
         if (muistiinDot) {
             html += `<br>${muistiinDot}`;
+        }
+        if (juhlaHtml) {
+            html += `<br>${juhlaHtml}`;
         }
         html += `</td>`;
     }
