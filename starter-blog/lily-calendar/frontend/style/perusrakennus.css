@@ -423,3 +423,10 @@ input, select, textarea {
         font-size: 0.9em;
     }
 }
+
+
+
+select:focus {
+    outline: none;
+    background: var(--main-bg);
+}
