@@ -79,7 +79,6 @@ header {
 #kuukausi {
     display: flex;
     margin: 20px;
-    background: var(--main-bg);
 }
 
 #kuukausi table {
@@ -105,6 +104,21 @@ header {
     background: var(--accent-bg);
     border-bottom: 2px solid var(--border);
     box-shadow: 5px 5px 0px 0px rgba(0,0,0,1);
+}
+#kuukausi table {
+    border-collapse: separate;
+    border-spacing: 0px;
+    background: var(--main-bg);
+}
+
+#kuukausi table {
+    border-top: 1px solid var(--border);
+    border-left: 1px solid var(--border);
+}
+
+#kuukausi th,
+#kuukausi td {
+    border: 1px solid;
 }
 
 #kuukausi td {
@@ -346,6 +360,33 @@ input, select, textarea {
     font-size: 0.95em;
 }
 
+@media (max-width: 1300px) {
+    #main-container, #column-2 {
+        width: 100%;
+        float: none;
+    }
+    #main-container {
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+        border-bottom: 2px solid var(--border);
+    }
+    #kuukausi {
+        margin: 5px;
+    }
+    .viikko-nakyma {
+        width: 100%;
+    }
+    #tapahtuma-container {
+        padding: 5px;
+        border: none;
+    }
+    .viikko-paiva-solu {
+        min-height: 200px;
+        max-height: 200px;
+        height: 200px;
+    }
+}
+
 @media (max-width: 1200px) {
     #main-container, #column-2 {
         float: none;
@@ -429,7 +470,11 @@ select:focus {
 .juhla-paiva {
     color: #c00;
     font-weight: bold;
-    font-size: 0.9em;
-    margin-top: 2px;
-    display: block;
+    font-size: 0.75em;
+    margin: 1px 0 0 0;
+    display: inline;
+    white-space: normal;
+    line-height: 1.1;
+    word-break: break-word;
+    padding: 0;
 }
