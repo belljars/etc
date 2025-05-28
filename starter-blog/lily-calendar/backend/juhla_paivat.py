@@ -1,5 +1,6 @@
 import sqlite3
 from typing import List, Tuple, Optional
+from datetime import datetime
 
 DB_FILE = "juhla_paivat.db"
 
@@ -34,20 +35,86 @@ def hae_juhla_pv_pvm(pvm: str) -> Optional[str]:
         row = cur.fetchone()
         return row[0] if row else None
 
+def poista_juhla_pv(pvm: str) -> bool:
+    with sqlite3.connect(DB_FILE) as conn:
+        cur = conn.cursor()
+        cur.execute("DELETE FROM juhla_paivat WHERE pvm = ?", (pvm,))
+        deleted = cur.rowcount > 0
+        conn.commit()
+        return deleted
+
+def paivita_juhla_pv(pvm: str, uusi_nimi: str) -> bool:
+    with sqlite3.connect(DB_FILE) as conn:
+        cur = conn.cursor()
+        cur.execute("UPDATE juhla_paivat SET nimi = ? WHERE pvm = ?", (uusi_nimi, pvm))
+        updated = cur.rowcount > 0
+        conn.commit()
+        return updated
+
+def validoi_pvm(pvm: str) -> bool:
+    try:
+        if pvm.startswith("xxxx-"):
+            # Accept xxxx-MM-DD (with real day) or xxxx-MM-xx (wildcard day)
+            parts = pvm.split("-")
+            if len(parts) == 3 and len(parts[1]) == 2 and len(parts[2]) == 2:
+                # Check that month is valid
+                month = int(parts[1])
+                if 1 <= month <= 12:
+                    if parts[2] == "xx":
+                        return True
+                    else:
+                        # Validate day for dummy year and month
+                        datetime.strptime(f"2000-{parts[1]}-{parts[2]}", "%Y-%m-%d")
+                        return True
+            return False
+        else:
+            datetime.strptime(pvm, "%Y-%m-%d")
+            return True
+    except ValueError:
+        return False
+
 if __name__ == "__main__":
     import sys
     alusta_tietokanta()
-    if len(sys.argv) == 3 and sys.argv[1] == "lisaa":
+    
+    if len(sys.argv) < 2:
+        print("Käyttö:")
+        print("  python juhla_paivat.py lisaa YYYY-MM-DD")
+        print("  python juhla_paivat.py poista YYYY-MM-DD")
+        print("  python juhla_paivat.py paivita YYYY-MM-DD")
+        print("  python juhla_paivat.py lista")
+        sys.exit(1)
 
+    komento = sys.argv[1]
+    
+    if komento == "lisaa" and len(sys.argv) == 3:
         pvm = sys.argv[2]
+        if not validoi_pvm(pvm):
+            print("Virheellinen päivämäärä. Käytä muotoa YYYY-MM-DD")
+            sys.exit(1)
         nimi = input("Anna juhlapäivän nimi: ")
         lisaa_juhla_pv(pvm, nimi)
         print(f"Lisätty: {pvm} - {nimi}")
-    elif len(sys.argv) == 2 and sys.argv[1] == "lista":
+    
+    elif komento == "poista" and len(sys.argv) == 3:
+        pvm = sys.argv[2]
+        if poista_juhla_pv(pvm):
+            print(f"Poistettu juhlapäivä: {pvm}")
+        else:
+            print(f"Juhlapäivää ei löytynyt: {pvm}")
+    
+    elif komento == "paivita" and len(sys.argv) == 3:
+        pvm = sys.argv[2]
+        uusi_nimi = input("Anna uusi nimi: ")
+        if paivita_juhla_pv(pvm, uusi_nimi):
+            print(f"Päivitetty: {pvm} - {uusi_nimi}")
+        else:
+            print(f"Juhlapäivää ei löytynyt: {pvm}")
+    
+    elif komento == "lista":
         paivat = hae_juhla_paivat()
         for pvm, nimi in paivat:
             print(f"{pvm}: {nimi}")
+    
     else:
-        print("Käyttö:")
-        print("  python juhla_paivat.py lisaa YYYY-MM-DD")
-        print("  python juhla_paivat.py lista")
+        print("Tuntematon komento tai väärä määrä parametreja")
