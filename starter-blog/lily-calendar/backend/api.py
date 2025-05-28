@@ -7,6 +7,7 @@ from typing import List, Optional
 import tapahtuma as tapahtuma
 import toistuva
 from juhla_paivat import hae_juhla_paivat
+from liikkuvat_paivat import laske_pyhainpaiva, laske_aitienpaiva, laske_kaatuneiden_muistopaiva, laske_isanpaiva, laske_paasiainen, laske_pitkaperjantai, laske_toinen_paasiainen, laske_helatorstai, laske_helluntaipaiva, laske_juhannuspaiva
 
 app = FastAPI()
 
@@ -204,6 +205,22 @@ def get_juhlapäivät():
     # Returns a list of dicts: [{"pvm": "YYYY-MM-DD", "nimi": "Juhlapäivä"}]
     paivat = hae_juhla_paivat()
     return [{"pvm": pvm, "nimi": nimi} for pvm, nimi in paivat]
+
+@app.get("/liikkuvat_juhlapäivät/{year}")
+def get_liikkuvat_juhlapäivät(year: int):
+    liikkuvat = [
+        {"pvm": laske_paasiainen(year).strftime("%Y-%m-%d"), "nimi": "Pääsiäinen"},
+        {"pvm": laske_pitkaperjantai(year).strftime("%Y-%m-%d"), "nimi": "Pitkäperjantai"},
+        {"pvm": laske_toinen_paasiainen(year).strftime("%Y-%m-%d"), "nimi": "2. pääsiäispäivä"},
+        {"pvm": laske_helatorstai(year).strftime("%Y-%m-%d"), "nimi": "Helatorstai"},
+        {"pvm": laske_helluntaipaiva(year).strftime("%Y-%m-%d"), "nimi": "Helluntaipäivä"},
+        {"pvm": laske_juhannuspaiva(year).strftime("%Y-%m-%d"), "nimi": "Juhannuspäivä"},
+        {"pvm": laske_pyhainpaiva(year).strftime("%Y-%m-%d"), "nimi": "Pyhäinpäivä"},
+        {"pvm": laske_aitienpaiva(year).strftime("%Y-%m-%d"), "nimi": "Äitienpäivä"},
+        {"pvm": laske_kaatuneiden_muistopaiva(year).strftime("%Y-%m-%d"), "nimi": "Kaatuneiden muistopäivä"},
+        {"pvm": laske_isanpaiva(year).strftime("%Y-%m-%d"), "nimi": "Isänpäivä"},
+    ]
+    return liikkuvat
 
 print("Backend is starting...")
 

@@ -29,16 +29,18 @@ window.renderviikko = function(date) {
         const paivattr = day.toISOString().slice(0, 10);
 
         let juhlaHtml = '';
-        if (window.kaikkiJuhlaPaivat) {
-            const [cellYear, cellMonth, cellDay] = paivattr.split('-');
-            const juhla = window.kaikkiJuhlaPaivat.find(j => {
-                if (j.pvm === paivattr) return true;
-                const [jYear, jMonth, jDay] = j.pvm.split('-');
-                return jYear === '0001' && jMonth === cellMonth && jDay === cellDay;
-            });
-            if (juhla) {
-                juhlaHtml = `<div class="juhla-paiva" title="${juhla.nimi}">${juhla.nimi}</div>`;
-            }
+        const kaikkiJuhlat = [
+            ...(window.kaikkiJuhlaPaivat || []),
+            ...(window.kaikkiLiikkuvatJuhlaPaivat || [])
+        ];
+        const [cellYear, cellMonth, cellDay] = paivattr.split('-');
+        const juhla = kaikkiJuhlat.find(j => {
+            if (j.pvm === paivattr) return true;
+            const [jYear, jMonth, jDay] = j.pvm.split('-');
+            return jYear === '0001' && jMonth === cellMonth && jDay === cellDay;
+        });
+        if (juhla) {
+            juhlaHtml = `<div class="juhla-paiva" title="${juhla.nimi}">${juhla.nimi}</div>`;
         }
 
         // User events
@@ -154,16 +156,18 @@ function renderWeekView(containerId, days, events) {
 
         // Juhlapäivä logic
         let juhlaHtml = '';
-        if (window.kaikkiJuhlaPaivat) {
-            const [cellYear, cellMonth, cellDay] = paivattr.split('-');
-            const juhla = window.kaikkiJuhlaPaivat.find(j => {
-                if (j.pvm === paivattr) return true;
-                const [jYear, jMonth, jDay] = j.pvm.split('-');
-                return jYear === '0001' && jMonth === cellMonth && jDay === cellDay;
-            });
-            if (juhla) {
-                juhlaHtml = `<div class="juhla-paiva" title="${juhla.nimi}">${juhla.nimi}</div>`;
-            }
+        const kaikkiJuhlat = [
+            ...(window.kaikkiJuhlaPaivat || []),
+            ...(window.kaikkiLiikkuvatJuhlaPaivat || [])
+        ];
+        const [cellYear, cellMonth, cellDay] = paivattr.split('-');
+        const juhla = kaikkiJuhlat.find(j => {
+            if (j.pvm === paivattr) return true;
+            const [jYear, jMonth, jDay] = j.pvm.split('-');
+            return jYear === '0001' && jMonth === cellMonth && jDay === cellDay;
+        });
+        if (juhla) {
+            juhlaHtml = `<div class="juhla-paiva" title="${juhla.nimi}">${juhla.nimi}</div>`;
         }
 
         // User events

@@ -30,7 +30,11 @@ function renderkuukausi(date, tapahtumat = window.kaikkiTapahtumat || []) {
             // Get current cell's month and day
             const [cellYear, cellMonth, cellDay] = dateStr.split('-');
             // Find juhlapäivä that matches either full date or recurring (0001-...)
-            const juhla = window.kaikkiJuhlaPaivat.find(j => {
+            const kaikkiJuhlat = [
+                ...(window.kaikkiJuhlaPaivat || []),
+                ...(window.kaikkiLiikkuvatJuhlaPaivat || [])
+            ];
+            const juhla = kaikkiJuhlat.find(j => {
                 if (j.pvm === dateStr) return true;
                 // Recurring: year is 0001, but month and day match
                 const [jYear, jMonth, jDay] = j.pvm.split('-');
@@ -109,23 +113,27 @@ function setNavigationLabels(date, mode = 'month') {
     }
 }
 
-document.getElementById('edellinenKuukausi').onclick = () => {
-	if (currentnakyma === 'month') {
-		currentMonth.setMonth(currentMonth.getMonth() - 1);
-		renderkuukausi(currentMonth, window.kaikkiTapahtumat || []);
-	} else {
-		currentMonth.setDate(currentMonth.getDate() - 7);
-		window.renderviikko(currentMonth);
-	}
+document.getElementById('edellinenKuukausi').onclick = async () => {
+    if (currentnakyma === 'month') {
+        currentMonth.setMonth(currentMonth.getMonth() - 1);
+        await paivitaJuhlaPaivat(currentMonth.getFullYear());
+        renderkuukausi(currentMonth, window.kaikkiTapahtumat || []);
+    } else {
+        currentMonth.setDate(currentMonth.getDate() - 7);
+        await paivitaJuhlaPaivat(currentMonth.getFullYear());
+        window.renderviikko(currentMonth);
+    }
 };
-document.getElementById('seuraavaKuukausi').onclick = () => {
-	if (currentnakyma === 'month') {
-		currentMonth.setMonth(currentMonth.getMonth() + 1);
-		renderkuukausi(currentMonth, window.kaikkiTapahtumat || []);
-	} else {
-		currentMonth.setDate(currentMonth.getDate() + 7);
-		window.renderviikko(currentMonth);
-	}
+document.getElementById('seuraavaKuukausi').onclick = async () => {
+    if (currentnakyma === 'month') {
+        currentMonth.setMonth(currentMonth.getMonth() + 1);
+        await paivitaJuhlaPaivat(currentMonth.getFullYear());
+        renderkuukausi(currentMonth, window.kaikkiTapahtumat || []);
+    } else {
+        currentMonth.setDate(currentMonth.getDate() + 7);
+        await paivitaJuhlaPaivat(currentMonth.getFullYear());
+        window.renderviikko(currentMonth);
+    }
 };
 
 document.getElementById('vaihdaNakemys').onclick = () => {

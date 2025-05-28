@@ -1,6 +1,7 @@
 let nykyisetLuokkaukset = [];
 let kaikkiTapahtumat = [];
 window.kaikkiJuhlaPaivat = [];
+window.kaikkiLiikkuvatJuhlaPaivat = [];
 
 async function haeLuokkaukset() {
     const response = await fetch('http://localhost:8080/luokkaukset');
@@ -44,10 +45,21 @@ async function haeJuhlaPaivat() {
     window.kaikkiJuhlaPaivat = await response.json();
 }
 
+async function haeLiikkuvatJuhlaPaivat(year) {
+    const response = await fetch(`http://localhost:8080/liikkuvat_juhlapäivät/${year}`);
+    window.kaikkiLiikkuvatJuhlaPaivat = await response.json();
+}
+
+async function paivitaJuhlaPaivat(year) {
+    await haeJuhlaPaivat();
+    await haeLiikkuvatJuhlaPaivat(year);
+}
+
 async function alusta() {
     await haeLuokkaukset();
     await haeTapahtumat();
-    await haeJuhlaPaivat();
+    const year = currentMonth.getFullYear();
+    await paivitaJuhlaPaivat(year);
     if (typeof renderkuukausi === "function") {
         renderkuukausi(currentMonth, window.kaikkiTapahtumat);
     }
