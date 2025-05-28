@@ -76,6 +76,10 @@ function rendertapahtumat(tapahtumat, skipFilters = false) {
         });
 
     const tapahtumatDiv = document.getElementById('tapahtumat');
+    if (sortedtapahtumat.length === 0) {
+        tapahtumatDiv.innerHTML = '<div style="text-align:center; color:#888; padding:30px 0; margin: none;"><p>Näyttää siltä, että täällä ei ole vielä tapahtumia!</p><br><p></p></div>';
+        return;
+    }
     tapahtumatDiv.innerHTML = sortedtapahtumat.map(e => {
         let kesto = '';
         if (e.alku_pvm && e.alku_aika && e.loppu_pvm && e.loppu_aika) {
@@ -91,7 +95,7 @@ function rendertapahtumat(tapahtumat, skipFilters = false) {
                 kesto = `${hours}h ${minutes}min`;
             }
         }
-        // Add class based on importance
+        
         let importanceClass = "tapahtuma-ei-tarkea";
         if (e.tarkeys === 1) importanceClass = "tapahtuma-tarkea";
         if (e.tarkeys === 2) importanceClass = "tapahtuma-erittain-tarkea";

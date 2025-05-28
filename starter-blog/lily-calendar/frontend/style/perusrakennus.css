@@ -17,6 +17,11 @@ html, body {
     min-height: 100vh;
 }
 
+html {
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
 header {
     padding: 16px;
     border-bottom: 2px solid var(--border);
@@ -53,7 +58,6 @@ header {
     margin: 5px 5px;
     font-size: 1em;
     cursor: pointer;
-    transition: background 0.1s;
 }
 
 #kuukausi-ohjaimet button:hover {
@@ -91,8 +95,8 @@ header {
 
 #kuukausi th,
 #kuukausi td {
-    width: 90px;
-    height: 90px;
+    width: 130px;
+    height: 130px;
     text-align: center;
     vertical-align: middle;
     border: 2px solid var(--border);
@@ -105,11 +109,13 @@ header {
     height: 40px;
     background: var(--accent-bg);
     border-bottom: 2px solid var(--border);
+    box-shadow: 5px 5px 0px 0px rgba(0,0,0,1);
 }
 
 #kuukausi td {
     cursor: pointer;
     position: relative;
+    box-shadow: 5px 5px 0px 0px rgba(0,0,0,1);
 }
 
 .tanaan,
@@ -126,16 +132,6 @@ header {
     border-radius: 0;
     margin-top: 6px;
     margin-bottom: 1px;
-    vertical-align: middle;
-}
-
-.muistiin-dot {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    background: var(--border);
-    border-radius: 0;
-    margin-top: 2px;
     vertical-align: middle;
 }
 
@@ -183,13 +179,12 @@ input:focus, select:focus, textarea:focus {
 }
 
 .viikko-nakyma {
-    display: flex;
     flex-direction: column;
-    width: 100%; /* Changed from fixed 980px to be responsive */
-    max-width: 980px; /* Add max-width to prevent too wide layout */
+    width: 910px;
+    min-width: 910px;
     border: 2px solid black;
     box-shadow: 5px 5px 0px 0px rgba(0,0,0,1);
-    margin: 0 auto; /* Center the calendar */
+    margin: 0 auto;
 }
 
 .viikko-paivat,
@@ -199,7 +194,7 @@ input:focus, select:focus, textarea:focus {
 
 .viikko-day-header,
 .viikko-paiva-solu {
-  flex: 1;
+    flex: 1;
     text-align: center;
     box-sizing: border-box;
 }
@@ -216,17 +211,17 @@ input:focus, select:focus, textarea:focus {
 }
 
 .viikko-paiva-solu {
-    min-height: 300px;
-    max-height: 300px;
-    height: 300px;
+    min-height: 350px;
+    max-height: 350px;
+    height: 350px;
     position: relative;
     border-right: 2px solid var(--border);
     overflow-y: auto;
     overflow-x: hidden;
     display: flex;
     flex-direction: column;
-    padding: 5px; /* Add some padding */
-    min-width: 0; /* Allow cell to shrink below content size */
+    padding: 5px;
+    min-width: 0;
 }
 
 .viikko-paiva-solu:last-child {
@@ -234,7 +229,6 @@ input:focus, select:focus, textarea:focus {
 }
 
 .viikko-event {
-    padding: 6px 10px;
     font-size: 0.97em;
     overflow: hidden;
     display: block;
@@ -243,8 +237,8 @@ input:focus, select:focus, textarea:focus {
     background: var(--event-bg);
     margin: 2px 5px;
     word-break: break-word;
-    width: calc(100% - 10px); /* Make events fill cell width with margin consideration */
-    min-width: 0; /* Allow text to wrap */
+    width: calc(100% - 10px);
+    min-width: 0;
 }
 
 .viikko-event:hover {
@@ -261,9 +255,17 @@ input:focus, select:focus, textarea:focus {
 #tapahtuma-container {
     width: 100%;
     background: var(--main-bg);
-    border-left: 2px solid var(--border);
     padding: 10px 20px;
     box-sizing: border-box;
+    border-left: 2px solid var(--border);
+}
+
+#tapahtumat-wrapper {
+    overflow-y: auto;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 2px solid var(--border);
+    background: var(--main-bg);
 }
 
 .tapahtuma-lista-item {
@@ -273,6 +275,11 @@ input:focus, select:focus, textarea:focus {
     margin-bottom: 10px;
     padding: 8px;
     font-size: 1em;
+    overflow-y: auto;
+}
+
+.tapahtuma-lista-item:last-child {
+    margin-bottom: 0;
 }
 
 .tapahtuma-ei-tarkea {
@@ -285,7 +292,17 @@ input:focus, select:focus, textarea:focus {
     color: var(--main-fg);
 }
 
+.tapahtuma-tarkea button {
+    background: var(--event-tarkea) !important;
+    color: var(--main-fg);
+}
+
 .tapahtuma-erittain-tarkea {
+    background: var(--event-erittain-tarkea) !important;
+    color: var(--main-fg);
+}
+
+.tapahtuma-erittain-tarkea button {
     background: var(--event-erittain-tarkea) !important;
     color: var(--main-fg);
 }
@@ -340,6 +357,11 @@ input, select, textarea {
         width: 100%;
         min-width: 0;
     }
+    #main-container {
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+        border-bottom: 2px solid var(--border);
+    }
     .viikko-nakyma {
         width: 100%;
         min-width: 0;
@@ -351,13 +373,21 @@ input, select, textarea {
     }
     
     .viikko-event {
-        font-size: 0.9em; /* Slightly smaller font on medium screens */
+        font-size: 0.9em;
         padding: 4px 8px;
     }
     
     .viikko-day-header {
         padding: 8px 4px;
         font-size: 0.95em;
+    }
+
+    #column-2 {
+        padding: 10px;
+    }
+
+    #tapahtuma-container {
+        border: none;
     }
 }
 
@@ -377,13 +407,13 @@ input, select, textarea {
     }
     
     .viikko-paiva-solu {
-        min-height: 200px; /* Shorter on mobile */
+        min-height: 200px;
         max-height: 200px;
         height: 200px;
     }
     
     .viikko-event {
-        font-size: 0.85em; /* Even smaller font on mobile */
+        font-size: 0.85em;
         padding: 3px 6px;
         margin: 1px 3px;
     }

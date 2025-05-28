@@ -27,6 +27,8 @@ def luo_toistuvat_tapahtumat(
     current_loppu = loppu_dt
     sarja_id = str(uuid.uuid4())
 
+    original_day = alku_dt.day
+
     while True:
         if loppuu_pvm:
             if current_alku.date() > datetime.strptime(loppuu_pvm, "%Y-%m-%d").date():
@@ -83,15 +85,20 @@ def luo_toistuvat_tapahtumat(
             current_loppu += timedelta(weeks=interval)
         elif toistuva == "kuukausi":
             interval = custom_interval or 1
-            current_alku += relativedelta(months=interval)
-            current_loppu += relativedelta(months=interval)
-        elif toistuva == "custom":
-
-            # Oletetaan custom_interval päivinä lol
-
-            interval = custom_interval or 1
-            current_alku += timedelta(days=interval)
-            current_loppu += timedelta(days=interval)
+            # Try to set to the original day of month, fallback to last day if needed
+            next_alku = current_alku + relativedelta(months=interval)
+            next_loppu = current_loppu + relativedelta(months=interval)
+            try:
+                current_alku = next_alku.replace(day=original_day)
+            except ValueError:
+                # If day is out of range for month, use last day of month
+                last_day = (next_alku + relativedelta(day=31)).day
+                current_alku = next_alku.replace(day=last_day)
+            try:
+                current_loppu = next_loppu.replace(day=original_day)
+            except ValueError:
+                last_day = (next_loppu + relativedelta(day=31)).day
+                current_loppu = next_loppu.replace(day=last_day)
         else:
             break
 

@@ -62,6 +62,18 @@ document.getElementById('toistuva').addEventListener('change', function() {
     const val = this.value;
     document.getElementById('toistuvaLisavalinnat').style.display = val ? 'block' : 'none';
     document.getElementById('viikonpaivat_valinta').style.display = val === 'viikko' ? 'block' : 'none';
+    document.getElementById('kuukausiHelper').style.display = val === 'kuukausi' ? 'inline' : 'none';
+
+    const intervalLabel = document.querySelector('label[for="toistuva_interval"]');
+    if (val === 'päivä') {
+        intervalLabel.textContent = 'Väli (esim. joka 2. päivä):';
+    } else if (val === 'viikko') {
+        intervalLabel.textContent = 'Väli (esim. joka 2. viikko):';
+    } else if (val === 'kuukausi') {
+        intervalLabel.textContent = 'Väli (esim. joka 2. kuukausi):';
+    } else {
+        intervalLabel.textContent = 'Väli (esim. joka 2. päivä):';
+    }
 });
 
 window.naytaMuokkausLomake = function(event, editAll = false) {

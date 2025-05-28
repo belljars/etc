@@ -44,7 +44,6 @@
                             <option value="päivä">Päivittäin</option>
                             <option value="viikko">Viikoittain</option>
                             <option value="kuukausi">Kuukausittain</option>
-                            <option value="custom">Custom</option>
                         </select>
                         <div id="toistuvaLisavalinnat" style="display:none;">
                             <label for="toistuva_maara">Toistojen määrä:</label>
@@ -53,6 +52,9 @@
                             <input type="date" id="toistuva_loppuu_pvm">
                             <label for="toistuva_interval">Väli (esim. joka 2. päivä):</label>
                             <input type="number" id="toistuva_interval" min="1" value="1">
+                            <span id="kuukausiHelper" style="display:none;">
+                              Toistuu kuukauden samana päivänä (esim. joka kuun 31. päivä siirtyy kuun viimeiseen päivään, jos sitä ei ole).
+                            </span>
                             <div id="viikonpaivat_valinta" style="display:none;">
                                 <label>Viikonpäivät:</label>
                                 <label>
@@ -102,58 +104,82 @@
             </div>
         </div>
         <div id="column-2">
-            
-                <div id="tapahtuma-container">
-                    <h3>Tapahtumat</h3>
-                    <div class="tapahtumat-wrapper">
-                        <div id="tapahtumat"></div>
-                    </div>
-                    <details id="suodatin">
-                        <summary>Suodata</summary>
-
-                        <div>
-                            <label for="suodataPaivamaarasta">Näytä tapahtumat väliltä:</label>
-                            <input type="date" id="suodataPaivamaarasta">
-                            <span>–</span>
-                            <input type="date" id="suodataPaivamaaraan">
-                            <button id="suodataNappi" type="button">Suodata</button>
-                            <button id="suodataTulevat" type="button">Tulevat ja käynnissä</button>
-                        </div>
-                        <div>
-                            <label for="suodatinKategoria">Luokkaus:</label>
-                            <select id="suodatinKategoria">
-                                <option value="">Kaikki</option>
-                            </select>
-                            <label for="suodataTarkeys">Tärkeys:</label>
-                            <select id="suodataTarkeys">
-                                <option value="">Kaikki</option>
-                                <option value="0">Ei tärkeä</option>
-                                <option value="1">Tärkeä</option>
-                                <option value="2">Erittäin tärkeä</option>
-                            </select>
-                            <label for="suodataAvainsanat">Hakusana:</label>
-                            <input type="text" id="suodataAvainsanat" placeholder="Nimi tai kuvaus">
-                            <label for="pikasuodatin">Pikasuodatin:</label>
-                            <select id="pikasuodatin">
-                                <option value="">Ei pikasuodatusta</option>
-                                <option value="tanaan">Tänään</option>
-                                <option value="tämäviikko">Tällä viikolla</option>
-                                <option value="tämäkuukausi">Tässä kuussa</option>
-                                <option value="menneetX">Viimeiset X päivää</option>
-                                <option value="tulevatX">Seuraavat X päivää</option>
-                            </select>
-                            <input type="number" id="pikasuodatinX" min="1" value="5" style="width:60px;display:none;" />
-                        </div>
-                    </details>
-                    <div id="luokkaukset-container">
-                        <h3>Luokkaukset</h3>
-                        <ul id="kategoriaLista" style="list-style:none"></ul>
-                    </div>
-                </div>
+    <div id="tapahtuma-container">
+        <h3>Tapahtumat</h3>
+        <div id="tapahtumat-wrapper">
+            <div id="tapahtumat"></div>
         </div>
 
-            
-    </body>
+        <div id="quick-filter" style="margin-bottom: 10px;">
+            <label for="pikasuodatin">Pikasuodatin:</label>
+            <select id="pikasuodatin">
+                <option value="tämäviikko" selected>Tällä viikolla</option>
+                <option value="tanaan">Tänään</option>
+                <option value="tämäkuukausi">Tässä kuussa</option>
+                <option value="menneetX">Viimeiset X päivää</option>
+                <option value="tulevatX">Seuraavat X päivää</option>
+            </select>
+            <input type="number" id="pikasuodatinX" min="1" value="5" style="width:60px;display:none;" />
+            <button id="toggleAdvancedFilter" type="button" style="margin-left:10px;">Lisäasetukset</button>
+        </div>
+
+        <div id="suodatin" style="display:none;">
+            <div style="clear:both"></div>
+            <div>
+                <label for="suodataPaivamaarasta">Näytä tapahtumat väliltä:</label>
+                <input type="date" id="suodataPaivamaarasta">
+                <span>–</span>
+                <input type="date" id="suodataPaivamaaraan">
+                <button id="suodataNappi" type="button">Suodata</button>
+                <button id="suodataTulevat" type="button">Tulevat ja käynnissä</button>
+            </div>
+            <div>
+                <label for="suodatinKategoria">Luokkaus:</label>
+                <select id="suodatinKategoria">
+                    <option value="">Kaikki</option>
+                </select>
+                <label for="suodataTarkeys">Tärkeys:</label>
+                <select id="suodataTarkeys">
+                    <option value="">Kaikki</option>
+                    <option value="0">Ei tärkeä</option>
+                    <option value="1">Tärkeä</option>
+                    <option value="2">Erittäin tärkeä</option>
+                </select>
+                <label for="suodataAvainsanat">Hakusana:</label>
+                <input type="text" id="suodataAvainsanat" placeholder="Nimi tai kuvaus">
+            </div>
+        </div>
+        <div id="luokkaukset-container">
+            <h3>Luokkaukset</h3>
+            <ul id="kategoriaLista" style="list-style:none"></ul>
+        </div>
+    </div>
+</div>
+<script>
+
+// Toggle advanced filter with one button
+const toggleBtn = document.getElementById('toggleAdvancedFilter');
+const suodatinDiv = document.getElementById('suodatin');
+let advancedOpen = false;
+
+toggleBtn.onclick = function() {
+    advancedOpen = !advancedOpen;
+    if (advancedOpen) {
+        suodatinDiv.style.display = '';
+        toggleBtn.textContent = 'Sulje lisäasetukset';
+    } else {
+        suodatinDiv.style.display = 'none';
+        toggleBtn.textContent = 'Lisäasetukset';
+    }
+};
+
+window.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('pikasuodatin').value = 'tämäviikko';
+    if (typeof window.rendertapahtumat === "function" && window.kaikkiTapahtumat) {
+        window.rendertapahtumat(window.kaikkiTapahtumat);
+    }
+});
+</script>
     <!-- JavaScripti -->
     <script src="script/main.js"></script>
     <script src="script/luokkaus.js"></script>
