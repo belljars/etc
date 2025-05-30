@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from typing import List, Optional
 
-import tapahtuma as tapahtuma
+import tapahtuma
 import toistuva
 from juhla_paivat import hae_juhla_paivat
 from liikkuvat_paivat import laske_pyhainpaiva, laske_aitienpaiva, laske_kaatuneiden_muistopaiva, laske_isanpaiva, laske_paasiainen, laske_pitkaperjantai, laske_toinen_paasiainen, laske_helatorstai, laske_helluntaipaiva, laske_juhannuspaiva

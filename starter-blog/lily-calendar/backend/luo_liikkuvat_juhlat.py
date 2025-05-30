@@ -1,3 +1,4 @@
+import os
 import sqlite3
 import sys
 from liikkuvat_paivat import (
@@ -7,7 +8,8 @@ from liikkuvat_paivat import (
     laske_isanpaiva
 )
 
-DB_FILE = "liikkuvat_juhlat.db"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_FILE = os.path.join(BASE_DIR, "database", "liikkuvat_juhlat.db")
 
 liikkuvat_juhlapaivat = [
     ("Pääsiäinen", laske_paasiainen),

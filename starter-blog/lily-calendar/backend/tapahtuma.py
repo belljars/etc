@@ -4,8 +4,10 @@ from typing import List, Optional, Dict
 from fastapi import FastAPI
 import uuid
 from pydantic import BaseModel
+import os
 
-DB_FILE = 'tapahtumat.db'
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_FILE = os.path.join(BASE_DIR, "database", "tapahtumat.db")
 app = FastAPI()
 
 

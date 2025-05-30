@@ -1,8 +1,11 @@
 import sqlite3
 from typing import List, Tuple, Optional
 from datetime import datetime
+import os
 
-DB_FILE = "juhla_paivat.db"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+os.makedirs(os.path.join(BASE_DIR, "database"), exist_ok=True)
+DB_FILE = os.path.join(BASE_DIR, "database", "juhla_paivat.db")
 
 def alusta_tietokanta():
     with sqlite3.connect(DB_FILE) as conn:
