@@ -1,8 +1,9 @@
-let nykyisetLuokkaukset = [];
-let kaikkiTapahtumat = [];
-window.kaikkiJuhlaPaivat = [];
-window.kaikkiLiikkuvatJuhlaPaivat = [];
+let nykyisetLuokkaukset = []; // Tämä on luokkauksien lista, joka haetaan palvelimelta
+let kaikkiTapahtumat = []; // Tämä on kaikkien tapahtumien lista, joka haetaan palvelimelta
+window.kaikkiJuhlaPaivat = []; // Tämä on kaikkien juhlapäivien lista, joka haetaan palvelimelta
+window.kaikkiLiikkuvatJuhlaPaivat = []; // Tämä on kaikkien liikkuvien juhlapäivien lista, joka haetaan palvelimelta
 
+// Tämä on nykyinen kuukausi, jota käytetään tapahtumien renderöinnissä
 async function haeLuokkaukset() {
     const response = await fetch('http://localhost:8080/luokkaukset');
     nykyisetLuokkaukset = await response.json();
@@ -11,6 +12,7 @@ async function haeLuokkaukset() {
     window.paivitaLuokkausFilter();
 }
 
+// Tämä funktio hakee kaikki tapahtumat palvelimelta ja asettaa ne globaaliksi muuttujaksi
 async function haeTapahtumat() {
     const response = await fetch('http://localhost:8080/tapahtumat');
     window.kaikkiTapahtumat = await response.json();
@@ -20,6 +22,7 @@ async function haeTapahtumat() {
     }
 }
 
+// Tämä funktio lisää uuden luokituksen palvelimelle
 async function lisaaTapahtuma(data) {
     return await fetch('http://localhost:8080/tapahtumat', {
         method: 'POST',
@@ -28,6 +31,7 @@ async function lisaaTapahtuma(data) {
     });
 }
 
+// Tämä funktio muokkaa olemassa olevaa tapahtumaa palvelimella
 async function muokkaaTapahtuma(id, data) {
     return await fetch(`http://localhost:8080/tapahtumat/${id}`, {
         method: 'PUT',
@@ -36,25 +40,30 @@ async function muokkaaTapahtuma(id, data) {
     });
 }
 
+// Tämä funktio poistaa tapahtuman palvelimelta
 async function poistaTapahtuma(id) {
     return await fetch(`http://localhost:8080/tapahtumat/${id}`, { method: 'DELETE' });
 }
 
+// Tämä funktio hakee kaikki juhlapäivät palvelimelta
 async function haeJuhlaPaivat() {
     const response = await fetch('http://localhost:8080/juhlapäivät');
     window.kaikkiJuhlaPaivat = await response.json();
 }
 
+// Tämä funktio hakee kaikki liikkuvat juhlapäivät palvelimelta
 async function haeLiikkuvatJuhlaPaivat(year) {
     const response = await fetch(`http://localhost:8080/liikkuvat_juhlapäivät/${year}`);
     window.kaikkiLiikkuvatJuhlaPaivat = await response.json();
 }
 
+// Tämä funktio päivittää juhlapäivät ja liikkuvat juhlapäivät
 async function paivitaJuhlaPaivat(year) {
     await haeJuhlaPaivat();
     await haeLiikkuvatJuhlaPaivat(year);
 }
 
+// Tämä on nykyinen kuukausi, jota käytetään tapahtumien renderöinnissä
 async function alusta() {
     await haeLuokkaukset();
     await haeTapahtumat();
@@ -65,6 +74,7 @@ async function alusta() {
     }
 }
 
+// Tämä funktio näyttää tulevat ja käynnissä olevat tapahtumat
 alusta();
 
 window.showtapahtumaModal = function() {
@@ -91,6 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('openTapahtumaModalNappi').onclick = window.showtapahtumaModal;
 });
 
+// Tämä funktio näyttää muokkauslomakkeen tapahtumalle
 window.naytaMuokkausLomake = function(event) {
     document.getElementById('editTapahtumaModal').style.display = 'block';
     document.getElementById('edit_id').value = event.id;

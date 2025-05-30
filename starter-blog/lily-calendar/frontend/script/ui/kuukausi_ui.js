@@ -3,6 +3,7 @@ const monthLabel = document.getElementById('kalenteriKuukausiOsoite');
 let currentMonth = new Date();
 let currentnakyma = 'month';
 
+// Funktio päivittää juhlapäivät ja liikkuvat juhlapäivät
 function renderkuukausi(date, tapahtumat = window.kaikkiTapahtumat || []) {
     const year = date.getFullYear();
     const month = date.getMonth();
@@ -15,6 +16,7 @@ function renderkuukausi(date, tapahtumat = window.kaikkiTapahtumat || []) {
     paivat.forEach(d => html += `<th>${d}</th>`);
     html += '</tr><tr>';
 
+    // Asetettaa kuukauden ensimmäisen päivän ja viimeisen päivän
     const tanaan = new Date();
     for (let i = 0; i < startDay; i++) html += '<td></td>';
     for (let d = 1; d <= lastDay.getDate(); d++) {
@@ -27,16 +29,13 @@ function renderkuukausi(date, tapahtumat = window.kaikkiTapahtumat || []) {
 
         let juhlaHtml = '';
         if (window.kaikkiJuhlaPaivat) {
-            // Get current cell's month and day
             const [cellYear, cellMonth, cellDay] = dateStr.split('-');
-            // Find juhlapäivä that matches either full date or recurring (0001-...)
             const kaikkiJuhlat = [
                 ...(window.kaikkiJuhlaPaivat || []),
                 ...(window.kaikkiLiikkuvatJuhlaPaivat || [])
             ];
             const juhla = kaikkiJuhlat.find(j => {
                 if (j.pvm === dateStr) return true;
-                // Recurring: year is 0001, but month and day match
                 const [jYear, jMonth, jDay] = j.pvm.split('-');
                 return jYear === '0001' && jMonth === cellMonth && jDay === cellDay;
             });
@@ -45,36 +44,45 @@ function renderkuukausi(date, tapahtumat = window.kaikkiTapahtumat || []) {
             }
         }
 
-        const hasEvent = tapahtumat && tapahtumat.some(ev => ev.alku_pvm === dateStr);
+        // Suodattaa tapahtumat, jotka alkavat tälle päivälle
+        const tapahtumatPaivalle = tapahtumat.filter(ev => ev.alku_pvm === dateStr);
 
-        let muistiinDot = '';
-        if (window.kaikkiMuistiinpanot) {
-            if (window.kaikkiMuistiinpanot.some(n => n.aikajana === 'm_paiva' && n.paivays === dateStr)) {
-                muistiinDot = '<span class="muistiin-dot"></span>';
-            }
+        let eventIndicator = '';
+        if (tapahtumatPaivalle.some(ev => ev.tarkeys === 2)) {
+            eventIndicator = '<span class="event-dot event-dot-erittain-tarkea">!!</span>';
+        } else if (tapahtumatPaivalle.some(ev => ev.tarkeys === 1)) {
+            eventIndicator = '<span class="event-dot event-dot-tarkea">!</span>';
+        } else if (tapahtumatPaivalle.length > 0) {
+            eventIndicator = '<span class="event-dot"></span>';
         }
 
-        html += `<td${istanaan ? ' class="tanaan"' : ''} data-date="${dateStr}">${d}`;
-        if (hasEvent) {
-            html += `<br><span class="event-dot"></span>`;
-        }
-        if (muistiinDot) {
-            html += `<br>${muistiinDot}`;
-        }
-        if (juhlaHtml) {
-            html += `<br>${juhlaHtml}`;
-        }
-        html += `</td>`;
+        html += `<td${istanaan ? ' class="tanaan"' : ''} data-date="${dateStr}">
+        <div class="paiva-numero">${d}</div>
+        ${juhlaHtml ? juhlaHtml : ""}
+        ${eventIndicator}
+    </td>`;
     }
     html += '</tr></table>';
     kuukausiDiv.innerHTML = html;
+
+    // Asettaa tapahtumien klikkaustapahtumat
+
+    kuukausiDiv.querySelectorAll('td[data-date]').forEach(td => {
+        td.addEventListener('click', function(e) {
+            const date = this.getAttribute('data-date');
+            const alkuPvmInput = document.getElementById('alku_pvm');
+            if (alkuPvmInput) alkuPvmInput.value = date;
+            const loppuPvmInput = document.getElementById('loppu_pvm');
+            if (loppuPvmInput) loppuPvmInput.value = date;
+            if (window.showtapahtumaModal) window.showtapahtumaModal();
+        });
+    });
 
     const kuukaudet = [
         'Tammikuu', 'Helmikuu', 'Maaliskuu', 'Huhtikuu', 'Toukokuu', 'Kesäkuu',
         'Heinäkuu', 'Elokuu', 'Syyskuu', 'Lokakuu', 'Marraskuu', 'Joulukuu'
     ];
     monthLabel.textContent = `${kuukaudet[month]} ${year}`;
-
     setNavigationLabels(date, 'month');
 }
 
@@ -102,6 +110,7 @@ function setNavigationLabels(date, mode = 'month') {
         document.getElementById('seuraavaKuukausi').textContent = `${kuukaudet[nextDate.getMonth()]} ${nextDate.getFullYear()}`;
     } else if (mode === 'viikko') {
  
+        // Asettaa viikon ensimmäisen päivän (maanantai) ja seuraavan viikon
         const monday = new Date(date);
         monday.setDate(monday.getDate() - ((monday.getDay() + 6) % 7));
         const prevMonday = new Date(monday);
@@ -113,6 +122,7 @@ function setNavigationLabels(date, mode = 'month') {
     }
 }
 
+// Tämä funktio päivittää juhlapäivät ja liikkuvat juhlapäivät
 document.getElementById('edellinenKuukausi').onclick = async () => {
     if (currentnakyma === 'month') {
         currentMonth.setMonth(currentMonth.getMonth() - 1);
@@ -124,6 +134,8 @@ document.getElementById('edellinenKuukausi').onclick = async () => {
         window.renderviikko(currentMonth);
     }
 };
+
+// Siirtyy seuraavaan kuukauteen tai viikkoon
 document.getElementById('seuraavaKuukausi').onclick = async () => {
     if (currentnakyma === 'month') {
         currentMonth.setMonth(currentMonth.getMonth() + 1);
@@ -136,6 +148,7 @@ document.getElementById('seuraavaKuukausi').onclick = async () => {
     }
 };
 
+// Vaihtaa näkymän kuukausi- ja viikkonäkymän välillä
 document.getElementById('vaihdaNakemys').onclick = () => {
 	if (currentnakyma === 'month') {
 		currentnakyma = 'viikko';

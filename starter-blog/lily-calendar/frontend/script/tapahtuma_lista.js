@@ -1,4 +1,4 @@
-function getFilters() {
+function getFilters() { // Hakee suodattimet lomakkeelta
     return {
         from: document.getElementById('suodataPaivamaarasta').value,
         to: document.getElementById('suodataPaivamaaraan').value,
@@ -10,6 +10,7 @@ function getFilters() {
     };
 }
 
+// Tämä funktio ottaa tapahtumat ja suodattimet, ja palauttaa vain ne tapahtumat, jotka täsmäävät suodattimiin
 function filtertapahtumat(tapahtumat, filters) {
     const now = new Date();
     let todayStr = now.toISOString().slice(0, 10);
@@ -43,6 +44,7 @@ function filtertapahtumat(tapahtumat, filters) {
         end = future.toISOString().slice(0, 10);
     }
 
+    // Suodattaa tapahtumat suodattimien perusteella
     return tapahtumat.filter(e => {
         if (filters.from && e.alku_pvm < filters.from) return false;
         if (filters.to && e.loppu_pvm > filters.to) return false;
@@ -60,6 +62,7 @@ function filtertapahtumat(tapahtumat, filters) {
     });
 }
 
+// Tämä funktio renderöi tapahtumat HTML:ään, ottaen huomioon suodattimet
 function rendertapahtumat(tapahtumat, skipFilters = false) {
     let filteredtapahtumat = tapahtumat;
     if (!skipFilters) {
@@ -67,6 +70,7 @@ function rendertapahtumat(tapahtumat, skipFilters = false) {
         filteredtapahtumat = filtertapahtumat(tapahtumat, filters);
     }
 
+    // Järjestää tapahtumat alku- ja loppupäivämäärän mukaan
     const sortedtapahtumat = filteredtapahtumat
         .filter(e => e.alku_pvm && e.alku_aika)
         .sort((a, b) => {
@@ -75,11 +79,13 @@ function rendertapahtumat(tapahtumat, skipFilters = false) {
             return aStart - bStart;
         });
 
+    // Järjestää tapahtumat, joissa ei ole alku- ja loppupäivämäärää, viimeiseksi
     const tapahtumatDiv = document.getElementById('tapahtumat');
-    if (sortedtapahtumat.length === 0) {
+    if (sortedtapahtumat.length === 0) { // Jos suodatettuja tapahtumia ei ole, näytetään viesti
         tapahtumatDiv.innerHTML = '<div style="text-align:center; color:#888; padding:30px 0; margin: none;"><p>Näyttää siltä, että täällä ei ole vielä tapahtumia!</p><br><p></p></div>';
         return;
     }
+
     tapahtumatDiv.innerHTML = sortedtapahtumat.map(e => {
         let kesto = '';
         if (e.alku_pvm && e.alku_aika && e.loppu_pvm && e.loppu_aika) {
@@ -96,6 +102,7 @@ function rendertapahtumat(tapahtumat, skipFilters = false) {
             }
         }
         
+        // Määrittää tärkeysluokan
         let importanceClass = "tapahtuma-ei-tarkea";
         if (e.tarkeys === 1) importanceClass = "tapahtuma-tarkea";
         if (e.tarkeys === 2) importanceClass = "tapahtuma-erittain-tarkea";
@@ -122,11 +129,13 @@ function rendertapahtumat(tapahtumat, skipFilters = false) {
         return html;
     }).join('');
 
+    // Lisää tapahtumien muokkaus- ja poistonapit
+
     document.querySelectorAll('.delete-Nappi').forEach(Nappi => {
         Nappi.addEventListener('click', async (ev) => {
             const id = ev.target.getAttribute('data-id');
             const event = kaikkiTapahtumat.find(e => e.id === id);
-            if (event && event.sarja_id) {
+            if (event && event.sarja_id) { // Jos tapahtuma on osa sarjaa
                 const choice = prompt(
                     "Poista toistuva tapahtuma:\n1 = Vain tämä\n2 = Kaikki toistuvat\n3 = Poista vain tämä ja irrota sarjasta",
                     "1"
@@ -142,6 +151,7 @@ function rendertapahtumat(tapahtumat, skipFilters = false) {
             } else {
                 await fetch(`http://localhost:8080/tapahtumat/${id}`, { method: 'DELETE' });
             }
+
             await haeLuokkaukset();
             await haeTapahtumat();
             location.reload();
@@ -149,6 +159,7 @@ function rendertapahtumat(tapahtumat, skipFilters = false) {
         });
     });
 
+    // Lisää tapahtumien muokkausnapit
     document.querySelectorAll('.edit-Nappi').forEach(Nappi => {
         Nappi.addEventListener('click', (ev) => {
             const id = ev.target.getAttribute('data-id');
@@ -175,6 +186,7 @@ function rendertapahtumat(tapahtumat, skipFilters = false) {
     });
 }
 
+// Tämä funktio hakee kaikki tapahtumat palvelimelta ja renderöi ne
 window.rendertapahtumat = rendertapahtumat;
 
 function filterAndRender() {

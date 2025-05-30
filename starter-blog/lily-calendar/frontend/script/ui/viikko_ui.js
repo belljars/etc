@@ -1,5 +1,7 @@
+// Suomennettu viikkonäkymä kalenterille
 const viikkopaivat = ['Ma', 'Ti', 'Ke', 'To', 'Pe', 'La', 'Su'];
 
+// Funktio, joka palauttaa viikon ensimmäisen päivän (maanantai) annetusta päivämäärästä
 function getMonday(date) {
     const d = new Date(date);
     const day = d.getDay();
@@ -12,6 +14,7 @@ window.renderviikko = function(date) {
     const monthLabel = document.getElementById('kalenteriKuukausiOsoite');
     const monday = getMonday(date);
 
+    // Asetetaan viikon päivämäärät
     let html = '<div class="viikko-nakyma">';
     html += '<div class="viikko-paivat">';
     viikkopaivat.forEach(d => html += `<div class="viikko-day-header">${d}</div>`);
@@ -43,7 +46,6 @@ window.renderviikko = function(date) {
             juhlaHtml = `<div class="juhla-paiva" title="${juhla.nimi}">${juhla.nimi}</div>`;
         }
 
-        // User events
         let tapahtumatHtml = '';
         if (window.kaikkiTapahtumat) {
             const tapahtumat = window.kaikkiTapahtumat.filter(ev => ev.alku_pvm === paivattr);
@@ -58,6 +60,7 @@ window.renderviikko = function(date) {
             }).join('');
         }
 
+        // Luoo HTML viikonpäivän solulle ja lisää tapahtumat ja juhlapäivät
         html += `<div class="viikko-paiva-solu${istanaan ? ' viikko-tanaan' : ''}" data-date="${paivattr}">
             <div class="viikko-date">${day.getDate()}.${day.getMonth() + 1}.</div>
             ${juhlaHtml}
@@ -66,8 +69,22 @@ window.renderviikko = function(date) {
     }
     html += '</div></div>';
 
+    // Asetetaan luotu HTML kuukausiDiv-elementtiin
     kuukausiDiv.innerHTML = html;
 
+    // Asettaa viikon ensimmäisen päivän (maanantai) tapahtumat
+    kuukausiDiv.querySelectorAll('.viikko-paiva-solu[data-date]').forEach(cell => {
+        cell.addEventListener('click', function(e) {
+            const date = this.getAttribute('data-date');
+            const alkuPvmInput = document.getElementById('alku_pvm');
+            if (alkuPvmInput) alkuPvmInput.value = date;
+            const loppuPvmInput = document.getElementById('loppu_pvm');
+            if (loppuPvmInput) loppuPvmInput.value = date;
+            if (window.showtapahtumaModal) window.showtapahtumaModal();
+        });
+    });
+
+    // Asettaa viikon numeron ja vuoden teksti
     function getWeekNumber(date) {
         const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
         const dayNum = d.getUTCDay() || 7;
@@ -83,6 +100,7 @@ window.renderviikko = function(date) {
     if (typeof setNavigationLabels === "function") setNavigationLabels(date, 'viikko');
 };
 
+// Renderöi viikon kalenteri
 function renderWeekCalendar(containerId, events) {
     const container = document.getElementById(containerId);
     container.innerHTML = '';
@@ -135,6 +153,7 @@ function renderWeekCalendar(containerId, events) {
     container.appendChild(calendar);
 }
 
+// Renderöi viikonäkymä kalenterille
 function renderWeekView(containerId, days, events) {
     const container = document.getElementById(containerId);
     container.innerHTML = '';
@@ -154,7 +173,6 @@ function renderWeekView(containerId, days, events) {
         const paivattr = day.toISOString().slice(0, 10);
         let cellHtml = '';
 
-        // Juhlapäivä logic
         let juhlaHtml = '';
         const kaikkiJuhlat = [
             ...(window.kaikkiJuhlaPaivat || []),
@@ -170,7 +188,6 @@ function renderWeekView(containerId, days, events) {
             juhlaHtml = `<div class="juhla-paiva" title="${juhla.nimi}">${juhla.nimi}</div>`;
         }
 
-        // User events
         if (window.kaikkiTapahtumat) {
             const tapahtumat = window.kaikkiTapahtumat.filter(ev => ev.alku_pvm === paivattr);
             cellHtml += tapahtumat.map(ev => {
@@ -183,7 +200,8 @@ function renderWeekView(containerId, days, events) {
                 </span>`;
             }).join('');
         }
-
+        
+        // Luoo HTML viikonpäivän solulle ja lisää tapahtumat ja juhlapäivät
         html += `<div class="viikko-paiva-solu${istanaan ? ' viikko-tanaan' : ''}" data-date="${paivattr}">
             <div class="viikko-date">${day.getDate()}.${day.getMonth() + 1}.</div>
             ${juhlaHtml}

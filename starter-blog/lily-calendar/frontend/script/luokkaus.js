@@ -1,12 +1,15 @@
+// Tämä tiedosto sisältää luokkauksen hallintaan liittyvät toiminnot
+// Haetaan luokkaukset palvelimelta!
+
 window.paivitaLuokkausLista = function() {
     const ul = document.getElementById('kategoriaLista');
     ul.innerHTML = '';
     nykyisetLuokkaukset.forEach(cat => {
         const li = document.createElement('li');
         li.textContent = cat + ' ';
-        
-        // Muokkaa-nappi
 
+        // Luoo muokkaus- ja poistonapit
+        // Ohjelma kysyy käyttäjältä uuden nimen muokkausta varten
         const editNappi = document.createElement('button');
         editNappi.textContent = 'Muokkaa';
         editNappi.onclick = async () => {
@@ -22,8 +25,6 @@ window.paivitaLuokkausLista = function() {
             }
         };
         li.appendChild(editNappi);
-
-        // Poista-nappi
 
         const delNappi = document.createElement('button');
         delNappi.textContent = 'Poista';
@@ -41,6 +42,9 @@ window.paivitaLuokkausLista = function() {
     });
 };
 
+// Päivittää luokkauksen datalist-elementin
+// Tämä on hyödyllinen, kun käyttäjä lisää uuden luokituksen tapahtumaan
+
 window.paivitaLuokkausDatalist = function() {
     const datalist = document.getElementById('luokkaus-lista');
     datalist.innerHTML = '';
@@ -50,6 +54,9 @@ window.paivitaLuokkausDatalist = function() {
         datalist.appendChild(option);
     });
 };
+
+// Päivittää luokkauksen suodatinvalikon
+// Tämä mahdollistaa suodattamisen luokituksen perusteella
 
 window.paivitaLuokkausFilter = function() {
     const select = document.getElementById('suodatinKategoria');

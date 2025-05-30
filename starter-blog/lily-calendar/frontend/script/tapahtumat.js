@@ -1,4 +1,4 @@
-
+// Tämä tiedosto sisältää luokkauksen hallintaan liittyvät toiminnot
 
 window.naytaTulevatJaKaynnissa = function() {
     const now = new Date();
@@ -10,6 +10,7 @@ window.naytaTulevatJaKaynnissa = function() {
     window.rendertapahtumat(filtered);
 };
 
+// Funktio, joka renderöi tapahtumat HTML-elementtiin
 document.getElementById('suodataNappi').onclick = function() {
     window.rendertapahtumat(window.kaikkiTapahtumat);
 };

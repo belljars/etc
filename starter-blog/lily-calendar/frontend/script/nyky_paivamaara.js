@@ -9,7 +9,7 @@ function paivitaTervehdys() {
         tervehdys = "Hyvää iltaa";
     }
     const dateStr = now.toLocaleDateString('fi-FI');
-    tervehdysDiv.textContent = `${tervehdys}! Tänään on ${dateStr}`;
+    tervehdysDiv.textContent = `${tervehdys}! Tänään on ${dateStr}`; // Muotoilee päivämäärän suomeksi
 }
 paivitaTervehdys();
-setInterval(paivitaTervehdys, 60000);
+setInterval(paivitaTervehdys, 60000); // Päivittää tervehdysviestin joka minuutti

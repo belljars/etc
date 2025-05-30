@@ -11,6 +11,7 @@ from liikkuvat_paivat import laske_pyhainpaiva, laske_aitienpaiva, laske_kaatune
 
 app = FastAPI()
 
+# CORS middleware jolla sallitaan kaikki lähteet
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -19,6 +20,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Pydantic malleja tapahtumille
 class TapahtumaModel(BaseModel):
     nimi: str
     alku_pvm: str
@@ -33,7 +35,7 @@ class ToistuvaTapahtumaModel(TapahtumaModel):
     toistuva: str
     maara: int
 
-@app.get("/")
+@app.get("/") # Juuri-URL
 def read_root():
     return {"message": "Lukujärjestys kalenteri API"}
 
@@ -221,6 +223,3 @@ def get_liikkuvat_juhlapäivät(year: int):
         {"pvm": laske_isanpaiva(year).strftime("%Y-%m-%d"), "nimi": "Isänpäivä"},
     ]
     return liikkuvat
-
-print("Backend is starting...")
-

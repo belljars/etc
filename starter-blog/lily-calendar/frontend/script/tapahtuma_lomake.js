@@ -1,6 +1,8 @@
 document.getElementById('tapahtumaLomake').addEventListener('submit', async function(event) {
     event.preventDefault();
 
+    // Tarkistaa, että kaikki pakolliset kentät on täytetty
+
     const data = {
         nimi: document.getElementById('nimi').value,
         alku_pvm: document.getElementById('alku_pvm').value,
@@ -11,6 +13,11 @@ document.getElementById('tapahtumaLomake').addEventListener('submit', async func
         luokkaus: document.getElementById('luokkaus').value.trim(),
         tarkeys: parseInt(document.getElementById('tarkeys').value, 10)
     };
+
+    // Tarkistaa, että nimi ja luokkaus on annettu ja että alku- ja loppupäivämäärät ovat kelvollisia
+
+    // Toistuvien tapahtumien käsittely
+    // Jos toistuva tapahtuma on valittu, lisätään tarvittavat kentät data-objektiin
 
     const toistuva = document.getElementById('toistuva').value;
     if (toistuva) {
@@ -23,6 +30,9 @@ document.getElementById('tapahtumaLomake').addEventListener('submit', async func
         if (toistuva === 'viikko') {
             data.viikonpaivat = Array.from(document.querySelectorAll('#viikonpaivat_valinta input:checked')).map(cb => parseInt(cb.value, 10));
         }
+
+        // Toistuvien tapahtumien lisäys
+        // Lähetetään POST-pyyntö toistuvien tapahtumien API:lle
 
         const response = await fetch('http://localhost:8080/toistuvat_tapahtumat', {
             method: 'POST',
@@ -41,6 +51,8 @@ document.getElementById('tapahtumaLomake').addEventListener('submit', async func
         return;
     }
 
+    // Yksittäisen tapahtuman lisäys
+
     const response = await lisaaTapahtuma(data);
     if (!response.ok) {
         const error = await response.json();
@@ -53,11 +65,15 @@ document.getElementById('tapahtumaLomake').addEventListener('submit', async func
     location.reload();
 });
 
+// Tyhjentää lomakkeen ja poistaa mahdolliset varoitukset
+
 document.getElementById('cleartapahtumaLomakeNappi').onclick = function() {
     document.getElementById('tapahtumaLomake').reset();
     document.getElementById('kategoriaVaroitus').textContent = '';
 };
 
+// Näyttää tai piilottaa toistuvan tapahtuman lisävalinnat
+// Kun käyttäjä valitsee toistuvan tapahtuman, näytetään lisävalinnat
 document.getElementById('toistuva').addEventListener('change', function() {
     const val = this.value;
     document.getElementById('toistuvaLisavalinnat').style.display = val ? 'block' : 'none';
@@ -74,7 +90,10 @@ document.getElementById('toistuva').addEventListener('change', function() {
     } else {
         intervalLabel.textContent = 'Väli (esim. joka 2. päivä):';
     }
+    // Piilottaa toistuvan tapahtuman lisävalinnat, jos toistuvaa ei ole valittu
 });
+
+// Näyttää muokkauslomakkeen ja täyttää sen tapahtuman tiedoilla
 
 window.naytaMuokkausLomake = function(event, editAll = false) {
     document.getElementById('editTapahtumaModal').style.display = 'block';
@@ -89,19 +108,24 @@ window.naytaMuokkausLomake = function(event, editAll = false) {
     document.getElementById('edit_tarkeys').value = event.tarkeys || "0";
     document.getElementById('tapahtumaModal').style.display = 'none';
     
+    // Asettaa muokkauslomakkeen datattributit
+
     document.getElementById('editTapahtumaLomake').dataset.editAll = editAll ? "1" : "";
     document.getElementById('editTapahtumaLomake').dataset.sarjaId = event.sarja_id || "";
 };
 
+// Sulkee muokkauslomakkeen ja palauttaa tapahtumalomakkeen näkyviin
 document.getElementById('peruutaEdit').onclick = function() {
     document.getElementById('editTapahtumaModal').style.display = 'none';
 };
 
+// Peruuta muokkaus ja palaa tapahtumalomakkeeseen
 document.getElementById('peruutaEdit').onclick = function() {
     document.getElementById('editTapahtumaLomake').style.display = 'none';
     document.getElementById('tapahtumaLomake').style.display = 'block';
 };
 
+// Muokkaa tapahtumaa ja päivitä se palvelimelle
 document.getElementById('editTapahtumaLomake').addEventListener('submit', async function(ev) {
     ev.preventDefault();
     const id = document.getElementById('edit_id').value;
