@@ -43,19 +43,31 @@ export function renderkuukausi(date, tapahtumat = window.kaikkiTapahtumat || [])
 
         const tapahtumatPaivalle = tapahtumat.filter(ev => ev.alku_pvm === dateStr);
 
-        let eventIndicator = '';
-        if (tapahtumatPaivalle.some(ev => ev.tarkeys === 2)) {
-            eventIndicator = '<span class="event-dot event-dot-erittain-tarkea">!!</span>';
-        } else if (tapahtumatPaivalle.some(ev => ev.tarkeys === 1)) {
-            eventIndicator = '<span class="event-dot event-dot-tarkea">!</span>';
-        } else if (tapahtumatPaivalle.length > 0) {
-            eventIndicator = '<span class="event-dot"></span>';
+        // Find the most important event
+        let mainEvent = null;
+        if (tapahtumatPaivalle.length > 0) {
+            // Sort by importance: 2 > 1 > 0
+            tapahtumatPaivalle.sort((a, b) => (b.tarkeys || 0) - (a.tarkeys || 0));
+            mainEvent = tapahtumatPaivalle[0];
         }
 
-        html += `<td${istanaan ? ' class="tanaan"' : ''} data-date="${dateStr}">
+        // Show event name and N+ badge if more than one event
+        let eventHtml = '';
+        if (mainEvent) {
+            let importanceClass = "tapahtuma-ei-tarkea";
+            if (mainEvent.tarkeys === 1) importanceClass = "tapahtuma-tarkea";
+            if (mainEvent.tarkeys === 2) importanceClass = "tapahtuma-erittain-tarkea";
+            // Use kuukausi-event for events, juhla-paiva for juhlat
+            eventHtml = `<div class="kuukausi-event ${importanceClass}" title="${mainEvent.nimi}">${mainEvent.nimi}</div>`;
+            if (tapahtumatPaivalle.length > 1) {
+                eventHtml += `<span class="event-count-badge" title="Lisää tapahtumia">${tapahtumatPaivalle.length}+</span>`;
+            }
+        }
+
+        html += `<td${istanaan ? ' class="tanaan"' : ''} data-date="${dateStr}" style="position:relative;">
         <div class="paiva-numero">${d}</div>
         ${juhlaHtml ? juhlaHtml : ""}
-        ${eventIndicator}
+        ${eventHtml}
     </td>`;
     }
     html += '</tr></table>';

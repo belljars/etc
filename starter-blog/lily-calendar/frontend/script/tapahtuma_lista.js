@@ -154,7 +154,6 @@ function rendertapahtumat(tapahtumat, skipFilters = false) {
 
             await haeLuokkaukset();
             await haeTapahtumat();
-            location.reload();
             return;
         });
     });

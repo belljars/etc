@@ -62,7 +62,6 @@ document.getElementById('tapahtumaLomake').addEventListener('submit', async func
     await haeLuokkaukset();
     await haeTapahtumat();
     event.target.reset();
-    location.reload();
 });
 
 // Tyhjentää lomakkeen ja poistaa mahdolliset varoitukset
@@ -154,5 +153,4 @@ document.getElementById('editTapahtumaLomake').addEventListener('submit', async 
     document.getElementById('tapahtumaLomake').style.display = 'block';
     await haeLuokkaukset();
     await haeTapahtumat();
-    location.reload();
 });

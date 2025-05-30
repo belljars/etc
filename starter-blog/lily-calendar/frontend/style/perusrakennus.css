@@ -6,8 +6,8 @@
     --highlight: #ffffb9;
     --event-dot: #000;
     --event-bg: #F9E7E7;
-    --event-tarkea: #fff7b2;
-    --event-erittain-tarkea: #ffb2b2;
+    --event-tarkea: #998c1b;
+    --event-erittain-tarkea: #b82f2f;
 }
 
 html, body {
@@ -387,6 +387,68 @@ input, select, textarea {
     font-size: 0.95em;
 }
 
+.event-main {
+    font-size: 1em;
+    margin-top: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+}
+
+.event-count-badge {
+    font-size: 1em;
+    background-color: var(--event-dot);
+    color: var(--main-bg);
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+
+/* Make juhla-paiva red */
+.juhla-paiva {
+    color: #c00 !important;
+    background: none !important;
+    font-weight: bold;
+    font-size: 0.75em;
+    margin: 1px 0 0 0;
+    margin-bottom: 2px;
+    display: block;
+    white-space: normal;
+    line-height: 1.1;
+    word-break: break-word;
+    padding: 0;
+}
+
+/* Month view event style */
+.kuukausi-event {
+    color: var(--main-fg);
+    font-weight: bold;
+    font-size: 0.85em;
+    margin: 2px 0 0 0;
+    margin-bottom: 2px;
+    display: block;
+    white-space: normal;
+    line-height: 1.1;
+    word-break: break-word;
+    padding: 0 2px;
+    border-radius: 3px;
+}
+
+/* Color by importance */
+.kuukausi-event.tapahtuma-tarkea {
+    color: var(--event-tarkea) !important;
+    background-color: var(--main-bg) !important;
+}
+.kuukausi-event.tapahtuma-erittain-tarkea {
+    color: var(--event-erittain-tarkea) !important;
+    background-color: var(--main-bg) !important;
+}
+.kuukausi-event.tapahtuma-ei-tarkea {
+    color: var(--event-bg) !important;
+    background-color: var(--main-bg) !important;
+}
+
 @media (max-width: 1300px) {
     #main-container, #column-2 {
         width: 100%;
@@ -490,18 +552,5 @@ input, select, textarea {
 select:focus {
     outline: none;
     background: var(--main-bg);
-}
-
-.juhla-paiva {
-    color: var(--main-fg);
-    font-weight: bold;
-    font-size: 0.75em;
-    margin: 1px 0 0 0;
-    margin-bottom: 2px;
-    display: block;
-    white-space: normal;
-    line-height: 1.1;
-    word-break: break-word;
-    padding: 0;
 }
 
