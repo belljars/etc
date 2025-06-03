@@ -114,24 +114,46 @@ function rendertapahtumat(tapahtumat, skipFilters = false) {
         if (e.tarkeys === 2) importanceClass = "tapahtuma-erittain-tarkea";
 
         let html = `<div class="tapahtuma-lista-item ${importanceClass}" data-id="${e.id}">
-            <strong>${e.nimi}</strong> (${e.alku_pvm})<br>`;
-        if (kesto) {
-            html += `<em>Kesto:</em> ${kesto}<br>`;
-        }
+    <div class="tapahtuma-lista-flex">
+        <div class="tapahtuma-lista-content">
+            <strong>${e.nimi}</strong><br><span style="color:#555;">`;
+
+if (e.alku_pvm && e.alku_aika) {
+    html += `${e.alku_pvm} ${e.alku_aika}`;
+} else if (e.alku_pvm) {
+    html += `${e.alku_pvm}`;
+}
+
+if (e.loppu_pvm && e.loppu_aika) {
+    if (e.loppu_pvm !== e.alku_pvm) {
+        html += ` - ${e.loppu_pvm} ${e.loppu_aika}`;
+    } else {
+        html += ` - ${e.loppu_aika}`;
+    }
+} else if (e.loppu_aika) {
+    html += ` - ${e.loppu_aika}`;
+}
+
+html += `</span><br>`;
+
         if (e.kuvaus) {
-            html += `<em>Kuvaus:</em> ${e.kuvaus}<br>`;
+            html += `${e.kuvaus}<br>`;
         }
         if (e.luokkaus) {
-            html += `<em>Luokkaus:</em> ${e.luokkaus}<br>`;
+            html += `${e.luokkaus}<br>`;
         }
         if (e.tarkeys !== undefined) {
             const importanceText = e.tarkeys === 2 ? 'Erittäin tärkeä' : e.tarkeys === 1 ? 'Tärkeä' : 'Ei tärkeä';
-            html += `<em>Tärkeys:</em> ${importanceText}<br>`;
+            html += `${importanceText}<br>`;
         }
 
-        html += `<button class="edit-Nappi" data-id="${e.id}">Muokkaa</button>
-                 <button class="delete-Nappi" data-id="${e.id}">Poista</button>
-                 </div>`;
+        html += `</div>
+        <div class="tapahtuma-lista-buttons">
+            <button class="edit-Nappi" data-id="${e.id}">Muokkaa</button>
+            <button class="delete-Nappi" data-id="${e.id}">Poista</button>
+        </div>
+    </div>
+</div>`;
         return html;
     }).join('');
 

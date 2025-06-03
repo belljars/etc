@@ -61,8 +61,15 @@ export function renderViikko(date) {
                 let importanceClass = "tapahtuma-ei-tarkea";
                 if (ev.tarkeys === 1) importanceClass = "tapahtuma-tarkea";
                 if (ev.tarkeys === 2) importanceClass = "tapahtuma-erittain-tarkea";
+
+                let timeStr = '';
+                if (ev.alku_aika && ev.loppu_aika) {
+                    timeStr = `<span class="event-time">${ev.alku_aika}–${ev.loppu_aika}</span> `;
+                } else if (ev.alku_aika) {
+                    timeStr = `<span class="event-time">${ev.alku_aika}</span> `;
+                }
                 return `<span class="viikko-event ${importanceClass}">
-                    ${ev.nimi}
+                    ${timeStr}${ev.nimi}
                     ${ev.kuvaus ? `<div class="viikko-event-desc">${ev.kuvaus}</div>` : ''}
                 </span>`;
             }).join('');

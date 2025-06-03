@@ -255,6 +255,31 @@ header {
     margin-bottom: 0;
 }
 
+.tapahtuma-lista-flex {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.tapahtuma-lista-content {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.tapahtuma-lista-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+    flex-shrink: 0;
+    margin-left: 10px;
+}
+
+.tapahtuma-lista-buttons button {
+    white-space: nowrap;
+}
+
 
 
 button, input[type="button"], input[type="submit"] {
@@ -385,4 +410,11 @@ input, select, textarea {
     #tapahtumat-wrapper {
         min-width: 400px;
     }
+}
+
+/* Add to your CSS file */
+.event-time {
+    color: #555;
+    font-size: 0.95em;
+    margin-right: 4px;
 }
