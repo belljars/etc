@@ -10,6 +10,7 @@ window.paivitaLuokkausLista = function() {
 
         // Luoo muokkaus- ja poistonapit
         // Ohjelma kysyy käyttäjältä uuden nimen muokkausta varten
+        
         const editNappi = document.createElement('button');
         editNappi.textContent = 'Muokkaa';
         editNappi.onclick = async () => {

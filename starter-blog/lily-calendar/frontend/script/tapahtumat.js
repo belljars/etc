@@ -11,6 +11,7 @@ window.naytaTulevatJaKaynnissa = function() {
 };
 
 // Funktio, joka renderöi tapahtumat HTML-elementtiin
+
 document.getElementById('suodataNappi').onclick = function() {
     window.rendertapahtumat(window.kaikkiTapahtumat);
 };

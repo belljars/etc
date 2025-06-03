@@ -1,11 +1,16 @@
+# Ohjelma luoo ja hallinnoi juhlapäiviä SQLite-tietokannan avulla
+
 import sqlite3
 from typing import List, Tuple, Optional
 from datetime import datetime
 import os
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-os.makedirs(os.path.join(BASE_DIR, "database"), exist_ok=True)
-DB_FILE = os.path.join(BASE_DIR, "database", "juhla_paivat.db")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__)) # Tämä on tiedoston sijainti
+os.makedirs(os.path.join(BASE_DIR, "database"), exist_ok=True) # Luoo hakemisto, jos sitä ei ole
+DB_FILE = os.path.join(BASE_DIR, "database", "juhla_paivat.db") # Tietokannan tiedosto
+
+
+# Määrittelee juhlapäivät ja niiden laskentafunktiot
 
 def alusta_tietokanta():
     with sqlite3.connect(DB_FILE) as conn:
@@ -19,17 +24,26 @@ def alusta_tietokanta():
         """)
         conn.commit()
 
+
+# Funktio lisää juhlapäivän tietokantaan
+
 def lisaa_juhla_pv(pvm: str, nimi: str):
     with sqlite3.connect(DB_FILE) as conn:
         cur = conn.cursor()
         cur.execute("INSERT INTO juhla_paivat (pvm, nimi) VALUES (?, ?)", (pvm, nimi))
         conn.commit()
 
+
+# Funktio poistaa tapahtumia tietokannasta
+
 def hae_juhla_paivat() -> List[Tuple[str, str]]:
     with sqlite3.connect(DB_FILE) as conn:
         cur = conn.cursor()
         cur.execute("SELECT pvm, nimi FROM juhla_paivat ORDER BY pvm")
         return cur.fetchall()
+
+
+# Funktiot hakevat, poistavat ja päivittävät juhlapäiviä tietokannasta
 
 def hae_juhla_pv_pvm(pvm: str) -> Optional[str]:
     with sqlite3.connect(DB_FILE) as conn:
@@ -54,19 +68,27 @@ def paivita_juhla_pv(pvm: str, uusi_nimi: str) -> bool:
         conn.commit()
         return updated
 
+
+# Funktio validoi päivämäärän muodon ja sisällön
 def validoi_pvm(pvm: str) -> bool:
     try:
         if pvm.startswith("xxxx-"):
-            # Accept xxxx-MM-DD (with real day) or xxxx-MM-xx (wildcard day)
+
+            # Hyväksyy muodon xxxx-MM-DD tai xxxx-MM-xx
+
             parts = pvm.split("-")
             if len(parts) == 3 and len(parts[1]) == 2 and len(parts[2]) == 2:
-                # Check that month is valid
+
+                # Tarkistaa, että kuukausi on 01-12 ja päivä on xx tai validi päivä
+
                 month = int(parts[1])
                 if 1 <= month <= 12:
                     if parts[2] == "xx":
                         return True
                     else:
-                        # Validate day for dummy year and month
+
+                        # Validoi, että päivä on validi
+
                         datetime.strptime(f"2000-{parts[1]}-{parts[2]}", "%Y-%m-%d")
                         return True
             return False
@@ -79,7 +101,8 @@ def validoi_pvm(pvm: str) -> bool:
 if __name__ == "__main__":
     import sys
     alusta_tietokanta()
-    
+
+
     if len(sys.argv) < 2:
         print("Käyttö:")
         print("  python juhla_paivat.py lisaa YYYY-MM-DD")

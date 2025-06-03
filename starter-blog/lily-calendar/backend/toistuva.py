@@ -11,7 +11,7 @@ def luo_toistuvat_tapahtumat(
     loppu_pvm: str,
     loppu_aika: str,
     kuvaus: str,
-    toistuva: str,  # "päivä", "viikko", "kuukausi", "custom"
+    toistuva: str,  # "päivä", "viikko", "kuukausi"
     maara: int = 1,
     luokkaus: Optional[str] = None,
     viikonpaivat: Optional[List[int]] = None,  # 0=ma, 6=su
@@ -73,7 +73,7 @@ def luo_toistuvat_tapahtumat(
         )
         count += 1
 
-        # Päivä, viikko, kuukausi tai custom toistot
+        # Päivä, viikko, tai kuukausi toistot
 
         if toistuva == "päivä":
             interval = custom_interval or 1
@@ -85,13 +85,12 @@ def luo_toistuvat_tapahtumat(
             current_loppu += timedelta(weeks=interval)
         elif toistuva == "kuukausi":
             interval = custom_interval or 1
-            # Try to set to the original day of month, fallback to last day if needed
             next_alku = current_alku + relativedelta(months=interval)
             next_loppu = current_loppu + relativedelta(months=interval)
             try:
                 current_alku = next_alku.replace(day=original_day)
             except ValueError:
-                # If day is out of range for month, use last day of month
+                # Jos päivämäärä ei ole sallittu kuukaudessa, käytetään kuukauden viimeistä päivää
                 last_day = (next_alku + relativedelta(day=31)).day
                 current_alku = next_alku.replace(day=last_day)
             try:

@@ -1,5 +1,7 @@
 import { getWeekNumber } from './weekNumber.js';
 
+// Funktio asetuksien päivittämiseen navigointinäkymässä
+
 export function setNavigationLabels(date, mode = 'month') {
     const kuukaudet = [
         'Tammikuu', 'Helmikuu', 'Maaliskuu', 'Huhtikuu', 'Toukokuu', 'Kesäkuu',

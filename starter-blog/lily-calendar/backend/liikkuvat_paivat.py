@@ -1,3 +1,5 @@
+# Koko ohjelma laskee liikkuvat päivät Suomessa, kuten pääsiäinen, juhannus ja muut tärkeät juhlapäivät
+
 import datetime
 
 def laske_paasiainen(year):

@@ -11,7 +11,9 @@ from liikkuvat_paivat import laske_pyhainpaiva, laske_aitienpaiva, laske_kaatune
 
 app = FastAPI()
 
+
 # CORS middleware jolla sallitaan kaikki lähteet
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -20,7 +22,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 # Pydantic malleja tapahtumille
+
 class TapahtumaModel(BaseModel):
     nimi: str
     alku_pvm: str

@@ -43,21 +43,28 @@ export function renderkuukausi(date, tapahtumat = window.kaikkiTapahtumat || [])
 
         const tapahtumatPaivalle = tapahtumat.filter(ev => ev.alku_pvm === dateStr);
 
-        // Find the most important event
+        // Etsii pääasiallisen tapahtuman tälle päivälle
+
         let mainEvent = null;
         if (tapahtumatPaivalle.length > 0) {
-            // Sort by importance: 2 > 1 > 0
+
+            // Järjestää tapahtumat tärkeyden mukaan, eli 2 > 1 > 0
+
             tapahtumatPaivalle.sort((a, b) => (b.tarkeys || 0) - (a.tarkeys || 0));
             mainEvent = tapahtumatPaivalle[0];
         }
 
-        // Show event name and N+ badge if more than one event
+        // Näyttää pääasiallisen tapahtuman, jos sellainen on
+
         let eventHtml = '';
         if (mainEvent) {
             let importanceClass = "tapahtuma-ei-tarkea";
             if (mainEvent.tarkeys === 1) importanceClass = "tapahtuma-tarkea";
             if (mainEvent.tarkeys === 2) importanceClass = "tapahtuma-erittain-tarkea";
-            // Use kuukausi-event for events, juhla-paiva for juhlat
+
+            // Käyttää tapahtuman nimen ja mahdollisen tapahtumien määrän
+            // Jos tapahtumia on useita, näyttää vain pääasiallisen ja lisää laskurin eli N+
+
             eventHtml = `<div class="kuukausi-event ${importanceClass}" title="${mainEvent.nimi}">${mainEvent.nimi}</div>`;
             if (tapahtumatPaivalle.length > 1) {
                 eventHtml += `<span class="event-count-badge" title="Lisää tapahtumia">${tapahtumatPaivalle.length}+</span>`;
@@ -73,6 +80,8 @@ export function renderkuukausi(date, tapahtumat = window.kaikkiTapahtumat || [])
     html += '</tr></table>';
     kuukausiDiv.innerHTML = html;
 
+    // Asettaa navigointinäkymän päivämäärät
+    
     kuukausiDiv.querySelectorAll('td[data-date]').forEach(td => {
         td.addEventListener('click', function(e) {
             const date = this.getAttribute('data-date');

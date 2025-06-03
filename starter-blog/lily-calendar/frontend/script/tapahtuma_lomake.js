@@ -73,6 +73,7 @@ document.getElementById('cleartapahtumaLomakeNappi').onclick = function() {
 
 // Näyttää tai piilottaa toistuvan tapahtuman lisävalinnat
 // Kun käyttäjä valitsee toistuvan tapahtuman, näytetään lisävalinnat
+
 document.getElementById('toistuva').addEventListener('change', function() {
     const val = this.value;
     document.getElementById('toistuvaLisavalinnat').style.display = val ? 'block' : 'none';
@@ -89,6 +90,7 @@ document.getElementById('toistuva').addEventListener('change', function() {
     } else {
         intervalLabel.textContent = 'Väli (esim. joka 2. päivä):';
     }
+
     // Piilottaa toistuvan tapahtuman lisävalinnat, jos toistuvaa ei ole valittu
 });
 
@@ -114,17 +116,20 @@ window.naytaMuokkausLomake = function(event, editAll = false) {
 };
 
 // Sulkee muokkauslomakkeen ja palauttaa tapahtumalomakkeen näkyviin
+
 document.getElementById('peruutaEdit').onclick = function() {
     document.getElementById('editTapahtumaModal').style.display = 'none';
 };
 
 // Peruuta muokkaus ja palaa tapahtumalomakkeeseen
+
 document.getElementById('peruutaEdit').onclick = function() {
     document.getElementById('editTapahtumaLomake').style.display = 'none';
     document.getElementById('tapahtumaLomake').style.display = 'block';
 };
 
 // Muokkaa tapahtumaa ja päivitä se palvelimelle
+
 document.getElementById('editTapahtumaLomake').addEventListener('submit', async function(ev) {
     ev.preventDefault();
     const id = document.getElementById('edit_id').value;

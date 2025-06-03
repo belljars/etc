@@ -7,7 +7,8 @@ window.renderkuukausi = renderkuukausi;
 window.currentMonth = currentMonth;
 window.currentnakyma = currentnakyma;
 
-// Navigation buttons
+// Navigationin asetukset
+
 document.getElementById('edellinenKuukausi').onclick = async () => {
     if (currentnakyma === 'month') {
         currentMonth.setMonth(currentMonth.getMonth() - 1);
@@ -20,6 +21,8 @@ document.getElementById('edellinenKuukausi').onclick = async () => {
     }
 };
 
+// Seuraava kuukausi tai viikko
+
 document.getElementById('seuraavaKuukausi').onclick = async () => {
     if (currentnakyma === 'month') {
         currentMonth.setMonth(currentMonth.getMonth() + 1);
@@ -31,6 +34,8 @@ document.getElementById('seuraavaKuukausi').onclick = async () => {
         window.renderviikko(currentMonth);
     }
 };
+
+// Vaihda näkymä kuukausi- ja viikkonäkymän välillä
 
 document.getElementById('vaihdaNakemys').onclick = () => {
     if (currentnakyma === 'month') {

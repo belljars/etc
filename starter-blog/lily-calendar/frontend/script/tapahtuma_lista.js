@@ -11,6 +11,7 @@ function getFilters() { // Hakee suodattimet lomakkeelta
 }
 
 // Tämä funktio ottaa tapahtumat ja suodattimet, ja palauttaa vain ne tapahtumat, jotka täsmäävät suodattimiin
+
 function filtertapahtumat(tapahtumat, filters) {
     const now = new Date();
     let todayStr = now.toISOString().slice(0, 10);
@@ -45,6 +46,7 @@ function filtertapahtumat(tapahtumat, filters) {
     }
 
     // Suodattaa tapahtumat suodattimien perusteella
+
     return tapahtumat.filter(e => {
         if (filters.from && e.alku_pvm < filters.from) return false;
         if (filters.to && e.loppu_pvm > filters.to) return false;
@@ -63,6 +65,7 @@ function filtertapahtumat(tapahtumat, filters) {
 }
 
 // Tämä funktio renderöi tapahtumat HTML:ään, ottaen huomioon suodattimet
+
 function rendertapahtumat(tapahtumat, skipFilters = false) {
     let filteredtapahtumat = tapahtumat;
     if (!skipFilters) {
@@ -71,6 +74,7 @@ function rendertapahtumat(tapahtumat, skipFilters = false) {
     }
 
     // Järjestää tapahtumat alku- ja loppupäivämäärän mukaan
+
     const sortedtapahtumat = filteredtapahtumat
         .filter(e => e.alku_pvm && e.alku_aika)
         .sort((a, b) => {
@@ -80,6 +84,7 @@ function rendertapahtumat(tapahtumat, skipFilters = false) {
         });
 
     // Järjestää tapahtumat, joissa ei ole alku- ja loppupäivämäärää, viimeiseksi
+
     const tapahtumatDiv = document.getElementById('tapahtumat');
     if (sortedtapahtumat.length === 0) { // Jos suodatettuja tapahtumia ei ole, näytetään viesti
         tapahtumatDiv.innerHTML = '<div style="text-align:center; color:#888; padding:30px 0; margin: none;"><p>Näyttää siltä, että täällä ei ole vielä tapahtumia!</p><br><p></p></div>';
@@ -103,6 +108,7 @@ function rendertapahtumat(tapahtumat, skipFilters = false) {
         }
         
         // Määrittää tärkeysluokan
+
         let importanceClass = "tapahtuma-ei-tarkea";
         if (e.tarkeys === 1) importanceClass = "tapahtuma-tarkea";
         if (e.tarkeys === 2) importanceClass = "tapahtuma-erittain-tarkea";
@@ -159,6 +165,7 @@ function rendertapahtumat(tapahtumat, skipFilters = false) {
     });
 
     // Lisää tapahtumien muokkausnapit
+
     document.querySelectorAll('.edit-Nappi').forEach(Nappi => {
         Nappi.addEventListener('click', (ev) => {
             const id = ev.target.getAttribute('data-id');
@@ -186,6 +193,7 @@ function rendertapahtumat(tapahtumat, skipFilters = false) {
 }
 
 // Tämä funktio hakee kaikki tapahtumat palvelimelta ja renderöi ne
+
 window.rendertapahtumat = rendertapahtumat;
 
 function filterAndRender() {

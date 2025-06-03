@@ -2,6 +2,8 @@ export function renderWeekView(containerId, days, events) {
     const container = document.getElementById(containerId);
     container.innerHTML = '';
 
+    // HTML-rakenne viikonäkymälle
+
     const grid = document.createElement('div');
     grid.className = 'viikko-grid';
 
@@ -12,6 +14,8 @@ export function renderWeekView(containerId, days, events) {
         grid.appendChild(header);
     });
 
+    // Laskee viikon päivät maanantaista sunnuntaihin
+    
     days.forEach((day, idx) => {
         const paivattr = day.toISOString().slice(0, 10);
         let cellHtml = '';
@@ -43,6 +47,8 @@ export function renderWeekView(containerId, days, events) {
                 </span>`;
             }).join('');
         }
+
+        // Luo solun viikonpäivälle
 
         const cell = document.createElement('div');
         cell.className = 'viikko-paiva-solu';

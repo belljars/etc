@@ -6,10 +6,15 @@ import uuid
 from pydantic import BaseModel
 import os
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_FILE = os.path.join(BASE_DIR, "database", "tapahtumat.db")
-app = FastAPI()
 
+# Määrittelee tietokannan sijainnin ja luo FastAPI-sovelluksen
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__)) # Tämä on tiedoston sijainti
+DB_FILE = os.path.join(BASE_DIR, "database", "tapahtumat.db") # Tietokannan tiedosto
+app = FastAPI() # FastAPI-sovellus, joka käsittelee tapahtumia
+
+
+# Tapahtuma-luokka, joka luo tapahtuman ja muuntaa sen sanakirjaksi
 
 class Tapahtuma:
     def __init__(
@@ -29,9 +34,13 @@ class Tapahtuma:
         self.sarja_id = sarja_id
 
 
+    # Luoo satunnainen UUID id:lle, jos sitä ei annettu
+
     def _luo_id(self) -> str:
         return str(uuid.uuid4())
 
+
+    # Muuntaa tapahtuman sanakirjaksi, jota voidaan käyttää JSON-vastauksena
 
     def muunna_sanakirjaksi(self) -> Dict:
         return {
@@ -47,6 +56,8 @@ class Tapahtuma:
             'sarja_id': self.sarja_id
         }
 
+
+# Alustaa tietokannan ja luo tarvittavat taulut jos niitä ei ole
 
 def _alusta_tietokanta() -> None:
     with sqlite3.connect(DB_FILE) as conn:
@@ -67,6 +78,8 @@ def _alusta_tietokanta() -> None:
         ''')
 
 
+        # Tarkistaa, että kaikki tarvittavat sarakkeet ovat olemassa
+
         cur.execute("PRAGMA table_info(tapahtumat)")
         columns = [row[1] for row in cur.fetchall()]
         if "luokkaus" not in columns:
@@ -77,6 +90,8 @@ def _alusta_tietokanta() -> None:
             cur.execute("ALTER TABLE tapahtumat ADD COLUMN sarja_id TEXT")
         conn.commit()
 
+
+# Lisää tapahtuma tietokantaan ja tarkistaa päivämäärien ja aikojen oikeellisuuden
 
 def lisaa_tapahtuma(nimi: str, alku_pvm: str, alku_aika: str,
                     loppu_pvm: str, loppu_aika: str, kuvaus: Optional[str] = None,
@@ -91,6 +106,8 @@ def lisaa_tapahtuma(nimi: str, alku_pvm: str, alku_aika: str,
         raise ValueError(f"Virheellinen päivämäärä/aika: {e}")
 
 
+    # Luoo uuden tapahtuma-olion ja lisää se tietokantaan
+
     tapahtuma_id = str(uuid.uuid4())
     tapahtuma = Tapahtuma(nimi, alku_pvm, alku_aika, loppu_pvm, loppu_aika, kuvaus, luokkaus, tarkeys, id=tapahtuma_id, sarja_id=sarja_id)
     with sqlite3.connect(DB_FILE) as conn:
@@ -104,6 +121,8 @@ def lisaa_tapahtuma(nimi: str, alku_pvm: str, alku_aika: str,
     return tapahtuma
 
 
+# Poistaa tapahtuman tietokannasta ja palauttaa True, jos tapahtuma poistettiin onnistuneesti
+
 def poista_tapahtuma(tapahtuma_id: str) -> bool:
     with sqlite3.connect(DB_FILE) as conn:
         cur = conn.cursor()
@@ -111,6 +130,8 @@ def poista_tapahtuma(tapahtuma_id: str) -> bool:
         conn.commit()
         return cur.rowcount > 0
 
+
+# Muokkaa tapahtumaa tietokannassa ja tarkistaa päivämäärien ja aikojen oikeellisuuden
 
 def muokkaa_tapahtuma(tapahtuma_id: str, **muutokset) -> Optional[Tapahtuma]:
     with sqlite3.connect(DB_FILE) as conn:
@@ -145,6 +166,8 @@ def muokkaa_tapahtuma(tapahtuma_id: str, **muutokset) -> Optional[Tapahtuma]:
         return tapahtuma
 
 
+# Hakee kaikki tapahtumat tietokannasta ja palauttaa ne listana Tapahtuma-olioina
+
 def hae_tapahtumat() -> List[Tapahtuma]:
     with sqlite3.connect(DB_FILE) as conn:
         cur = conn.cursor()
@@ -156,6 +179,8 @@ def hae_tapahtumat() -> List[Tapahtuma]:
         ]
 
 
+# Hakee yksittäisen tapahtuman ID:n perusteella ja palauttaa sen Tapahtuma-oliona
+
 def hae_tapahtuma(tapahtuma_id: str) -> Optional[Tapahtuma]:
     with sqlite3.connect(DB_FILE) as conn:
         cur = conn.cursor()
@@ -166,10 +191,14 @@ def hae_tapahtuma(tapahtuma_id: str) -> Optional[Tapahtuma]:
     return None
 
 
+# FastAPI-reitit tapahtumien hallintaan
+
 @app.get("/debug/tapahtumat")
 def debug_get_all_events():
     return [event.muunna_sanakirjaksi() for event in hae_tapahtumat()]
 
+
+# FastAPI-malli tapahtuman syötteelle
 
 class TapahtumaInput(BaseModel):
     nimi: str
@@ -181,6 +210,8 @@ class TapahtumaInput(BaseModel):
     luokkaus: str = ""
     tarkeys: int = 0
 
+
+# FastAPI-reitti kaikkien tapahtumien hakemiseen
 
 @app.post("/tapahtumat")
 async def create_event(event: TapahtumaInput):
@@ -197,8 +228,13 @@ async def create_event(event: TapahtumaInput):
     return tapahtuma.muunna_sanakirjaksi()
 
 
+# FastAPI-reitti yksittäisen tapahtuman hakemiseen ID:n perusteella
+
 @app.delete("/tapahtumat/{tapahtuma_id}")
 def delete_event(tapahtuma_id: str):
     return {"success": True}
+
+
+# FastAPI-reitti tapahtuman muokkaamiseen ID:n perusteella
 
 _alusta_tietokanta()

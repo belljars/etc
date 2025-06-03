@@ -6,8 +6,8 @@
     --highlight: #ffffb9;
     --event-dot: #000;
     --event-bg: #F9E7E7;
-    --event-tarkea: #998c1b;
-    --event-erittain-tarkea: #b82f2f;
+    --event-tarkea: #ffeea3;
+    --event-erittain-tarkea: #fcadad;
 }
 
 html, body {
@@ -435,18 +435,17 @@ input, select, textarea {
     border-radius: 3px;
 }
 
-/* Color by importance */
 .kuukausi-event.tapahtuma-tarkea {
-    color: var(--event-tarkea) !important;
-    background-color: var(--main-bg) !important;
+    background-color: var(--event-tarkea) !important;
+    color: var(--main-fg) !important;
 }
 .kuukausi-event.tapahtuma-erittain-tarkea {
-    color: var(--event-erittain-tarkea) !important;
-    background-color: var(--main-bg) !important;
+    background-color: var(--event-erittain-tarkea) !important;
+    color: var(--main-fg) !important;
 }
 .kuukausi-event.tapahtuma-ei-tarkea {
-    color: var(--event-bg) !important;
     background-color: var(--main-bg) !important;
+    color: var(--main-fg) !important;
 }
 
 @media (max-width: 1300px) {

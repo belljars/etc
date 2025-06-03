@@ -6,3 +6,7 @@ export function getWeekNumber(date) {
     const weekNum = Math.ceil((((d - yearStart) / 86400000) + 1)/7);
     return weekNum;
 }
+
+// Funktio laskee viikon numeron eli
+// - palauttaa viikon numeron ISO 8601 standardin mukaisesti
+// - viikko alkaa maanantaista ja päättyy sunnuntaihin

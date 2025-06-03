@@ -1,6 +1,8 @@
 import { getMonday } from './getMonday.js';
 import { getWeekNumber } from './weekNumber.js';
 
+// Funktio renderoi viikon näkymän kalenteriin
+
 const viikkopaivat = ['Ma', 'Ti', 'Ke', 'To', 'Pe', 'La', 'Su'];
 
 export function renderViikko(date) {
@@ -8,10 +10,14 @@ export function renderViikko(date) {
     const monthLabel = document.getElementById('kalenteriKuukausiOsoite');
     const monday = getMonday(date);
 
+    // HTML rakenne viikon näkymälle
+
     let html = '<div class="viikko-nakyma">';
     html += '<div class="viikko-paivat">';
     viikkopaivat.forEach(d => html += `<div class="viikko-day-header">${d}</div>`);
     html += '</div><div class="viikko-solut">';
+
+    // Laskee viikon päivät maanantaista sunnuntaihin
 
     const tanaan = new Date();
     for (let i = 0; i < 7; i++) {
@@ -22,7 +28,11 @@ export function renderViikko(date) {
             day.getMonth() === tanaan.getMonth() &&
             day.getFullYear() === tanaan.getFullYear();
 
+        // Muodostaa päivämääräattribuutin ISO-muodossa
+
         const paivattr = day.toISOString().slice(0, 10);
+
+        // Luo HTML sisällön päivälle eli juhlapäivälle ja tapahtumille
 
         let juhlaHtml = '';
         const kaikkiJuhlat = [
@@ -35,9 +45,14 @@ export function renderViikko(date) {
             const [jYear, jMonth, jDay] = j.pvm.split('-');
             return jYear === '0001' && jMonth === cellMonth && jDay === cellDay;
         });
+
+        // jos juhla löytyy, luodaan HTML sille
+
         if (juhla) {
             juhlaHtml = `<div class="juhla-paiva" title="${juhla.nimi}">${juhla.nimi}</div>`;
         }
+
+        // Etsii tapahtumat, jotka alkavat kyseisenä päivänä
 
         let tapahtumatHtml = '';
         if (window.kaikkiTapahtumat) {
@@ -53,6 +68,8 @@ export function renderViikko(date) {
             }).join('');
         }
 
+        // Muodostaa HTML sisällön viikon päivän solulle
+
         html += `<div class="viikko-paiva-solu${istanaan ? ' viikko-tanaan' : ''}" data-date="${paivattr}">
             <div class="viikko-date">${day.getDate()}.${day.getMonth() + 1}.</div>
             ${juhlaHtml}
@@ -62,6 +79,8 @@ export function renderViikko(date) {
     html += '</div></div>';
 
     kuukausiDiv.innerHTML = html;
+
+    // Päivitetään viikon päivien otsikot
 
     kuukausiDiv.querySelectorAll('.viikko-paiva-solu[data-date]').forEach(cell => {
         cell.addEventListener('click', function(e) {
@@ -74,8 +93,12 @@ export function renderViikko(date) {
         });
     });
 
+    // Päivitetään kuukauden otsikko
+
     const viikkoNumber = getWeekNumber(monday);
     monthLabel.textContent = `Viikko ${viikkoNumber}, ${monday.getFullYear()}`;
+
+    // Päivitetään navigointinapit
 
     if (typeof window.setNavigationLabels === "function") window.setNavigationLabels(date, 'viikko');
 }

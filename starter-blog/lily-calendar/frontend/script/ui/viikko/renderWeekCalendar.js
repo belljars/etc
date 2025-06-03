@@ -5,6 +5,8 @@ export function renderWeekCalendar(containerId, events) {
     const days = ['Ma', 'Ti', 'Ke', 'To', 'Pe', 'La', 'Su'];
     const hours = Array.from({ length: 12 }, (_, i) => `${i + 8}:00`);
 
+    // Luoo viikon kalenterin HTML-rakenteen
+
     const calendar = document.createElement('div');
     calendar.className = 'week-calendar';
 
@@ -19,6 +21,8 @@ export function renderWeekCalendar(containerId, events) {
     });
     calendar.appendChild(headerRow);
 
+    // Luoo tunnit ja päivät kalenteriin
+
     hours.forEach(hour => {
         const row = document.createElement('div');
         row.className = 'calendar-row';
@@ -28,10 +32,13 @@ export function renderWeekCalendar(containerId, events) {
         hourCell.textContent = hour;
         row.appendChild(hourCell);
 
+        // Etsii tapahtumat kyseiselle tunnille ja päivälle
         days.forEach((day, dayIdx) => {
             const cell = document.createElement('div');
             cell.className = 'calendar-cell event-cell';
 
+            // Asettaa päivämäärä- ja tunti-attribuutit solulle
+            
             const event = events.find(ev =>
                 ev.day === dayIdx && ev.hour === hour
             );
