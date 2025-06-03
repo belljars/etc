@@ -57,16 +57,18 @@ export function renderkuukausi(date, tapahtumat = window.kaikkiTapahtumat || [])
         // Näyttää pääasiallisen tapahtuman, jos sellainen on
 
         let eventHtml = '';
-        if (mainEvent) {
-            let importanceClass = "tapahtuma-ei-tarkea";
-            if (mainEvent.tarkeys === 1) importanceClass = "tapahtuma-tarkea";
-            if (mainEvent.tarkeys === 2) importanceClass = "tapahtuma-erittain-tarkea";
+        if (tapahtumatPaivalle.length > 0) {
 
-            // Käyttää tapahtuman nimen ja mahdollisen tapahtumien määrän
-            // Jos tapahtumia on useita, näyttää vain pääasiallisen ja lisää laskurin eli N+
+            tapahtumatPaivalle.sort((a, b) => (b.tarkeys || 0) - (a.tarkeys || 0));
 
-            eventHtml = `<div class="kuukausi-event ${importanceClass}" title="${mainEvent.nimi}">${mainEvent.nimi}</div>`;
-            if (tapahtumatPaivalle.length > 1) {
+            tapahtumatPaivalle.slice(0, 3).forEach(ev => {
+                let importanceClass = "tapahtuma-ei-tarkea";
+                if (ev.tarkeys === 1) importanceClass = "tapahtuma-tarkea";
+                if (ev.tarkeys === 2) importanceClass = "tapahtuma-erittain-tarkea";
+                eventHtml += `<div class="kuukausi-event ${importanceClass}" title="${ev.nimi}">${ev.nimi}</div>`;
+            });
+
+            if (tapahtumatPaivalle.length > 3) {
                 eventHtml += `<span class="event-count-badge" title="Lisää tapahtumia">${tapahtumatPaivalle.length}+</span>`;
             }
         }
