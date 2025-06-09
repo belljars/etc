@@ -28,11 +28,7 @@ export function renderViikko(date) {
             day.getMonth() === tanaan.getMonth() &&
             day.getFullYear() === tanaan.getFullYear();
 
-        // Muodostaa päivämääräattribuutin ISO-muodossa
-
         const paivattr = day.toISOString().slice(0, 10);
-
-        // Luo HTML sisällön päivälle eli juhlapäivälle ja tapahtumille
 
         let juhlaHtml = '';
         const kaikkiJuhlat = [
@@ -46,38 +42,58 @@ export function renderViikko(date) {
             return jYear === '0001' && jMonth === cellMonth && jDay === cellDay;
         });
 
-        // jos juhla löytyy, luodaan HTML sille
-
         if (juhla) {
             juhlaHtml = `<div class="juhla-paiva" title="${juhla.nimi}">${juhla.nimi}</div>`;
         }
 
-        // Etsii tapahtumat, jotka alkavat kyseisenä päivänä
-
         let tapahtumatHtml = '';
+        let tapahtumat = [];
         if (window.kaikkiTapahtumat) {
-            const tapahtumat = window.kaikkiTapahtumat.filter(ev => ev.alku_pvm === paivattr);
-            tapahtumatHtml = tapahtumat.map(ev => {
-                let importanceClass = "tapahtuma-ei-tarkea";
-                if (ev.tarkeys === 1) importanceClass = "tapahtuma-tarkea";
-                if (ev.tarkeys === 2) importanceClass = "tapahtuma-erittain-tarkea";
+            tapahtumat = window.kaikkiTapahtumat.filter(ev => ev.alku_pvm === paivattr);
 
-                let timeStr = '';
-                if (ev.alku_aika && ev.loppu_aika) {
-                    timeStr = `<span class="event-time">${ev.alku_aika}–${ev.loppu_aika}</span> `;
-                } else if (ev.alku_aika) {
-                    timeStr = `<span class="event-time">${ev.alku_aika}</span> `;
-                }
-                return `<span class="viikko-event ${importanceClass}">
-                    ${timeStr}${ev.nimi}
-                    ${ev.kuvaus ? `<div class="viikko-event-desc">${ev.kuvaus}</div>` : ''}
-                </span>`;
-            }).join('');
+            // Calculate total length of names and descriptions
+            const totalChars = tapahtumat.reduce((sum, ev) => sum + (ev.nimi?.length || 0) + (ev.kuvaus?.length || 0), 0);
+
+            if (totalChars > 100) {
+                // Collapsed: show only time or generic label, hide name and description
+                tapahtumatHtml = tapahtumat.map((ev, idx) => {
+                    let importanceClass = "tapahtuma-ei-tarkea";
+                    if (ev.tarkeys === 1) importanceClass = "tapahtuma-tarkea";
+                    if (ev.tarkeys === 2) importanceClass = "tapahtuma-erittain-tarkea";
+                    let timeStr = '';
+                    if (ev.alku_aika && ev.loppu_aika) {
+                        timeStr = `<span class="event-time">${ev.alku_aika}–${ev.loppu_aika}</span> `;
+                    } else if (ev.alku_aika) {
+                        timeStr = `<span class="event-time">${ev.alku_aika}</span> `;
+                    }
+                    // Only show time, not name or description
+                    return `<span class="viikko-event collapsed ${importanceClass}" data-idx="${idx}">
+                        ${timeStr || 'Tapahtuma'}
+                    </span>`;
+                }).join('');
+            } else {
+                // Expanded: show names and descriptions
+                tapahtumatHtml = tapahtumat.map((ev, idx) => {
+                    let importanceClass = "tapahtuma-ei-tarkea";
+                    if (ev.tarkeys === 1) importanceClass = "tapahtuma-tarkea";
+                    if (ev.tarkeys === 2) importanceClass = "tapahtuma-erittain-tarkea";
+                    let timeStr = '';
+                    if (ev.alku_aika && ev.loppu_aika) {
+                        timeStr = `<span class="event-time">${ev.alku_aika}–${ev.loppu_aika}</span> `;
+                    } else if (ev.alku_aika) {
+                        timeStr = `<span class="event-time">${ev.alku_aika}</span> `;
+                    }
+                    return `<span class="viikko-event expanded ${importanceClass}" data-idx="${idx}">
+                        ${timeStr}${ev.nimi}
+                        ${ev.kuvaus ? `<div class="viikko-event-desc">${ev.kuvaus}</div>` : ''}
+                    </span>`;
+                }).join('');
+            }
         }
 
         // Muodostaa HTML sisällön viikon päivän solulle
 
-        html += `<div class="viikko-paiva-solu${istanaan ? ' viikko-tanaan' : ''}" data-date="${paivattr}">
+        html += `<div class="viikko-paiva-solu${istanaan ? ' viikko-tanaan' : ''}" data-date="${paivattr}" data-tapahtumat='${JSON.stringify(tapahtumat)}'>
             <div class="viikko-date">${day.getDate()}.${day.getMonth() + 1}.</div>
             ${juhlaHtml}
             ${tapahtumatHtml}
@@ -87,10 +103,17 @@ export function renderViikko(date) {
 
     kuukausiDiv.innerHTML = html;
 
-    // Päivitetään viikon päivien otsikot
-
+    // Add event listeners for expanding/collapsing events
     kuukausiDiv.querySelectorAll('.viikko-paiva-solu[data-date]').forEach(cell => {
+        // Parse tapahtumat for this cell
+        let tapahtumat = [];
+        try {
+            tapahtumat = JSON.parse(cell.getAttribute('data-tapahtumat') || '[]');
+        } catch (e) {}
+
+        // Only open the event creation modal if the cell itself (not an event) is clicked
         cell.addEventListener('click', function(e) {
+            if (e.target.closest('.viikko-event')) return;
             const date = this.getAttribute('data-date');
             const alkuPvmInput = document.getElementById('alku_pvm');
             if (alkuPvmInput) alkuPvmInput.value = date;
@@ -98,6 +121,41 @@ export function renderViikko(date) {
             if (loppuPvmInput) loppuPvmInput.value = date;
             if (window.showtapahtumaModal) window.showtapahtumaModal();
         });
+
+        // Add event click for expanding/collapsing
+        const events = cell.querySelectorAll('.viikko-event.collapsed');
+        if (events.length > 0) {
+            events.forEach(evEl => {
+                evEl.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    // Collapse all events in this cell
+                    events.forEach((el, idx) => {
+                        let ev = tapahtumat[idx];
+                        let timeStr = '';
+                        if (ev.alku_aika && ev.loppu_aika) {
+                            timeStr = `<span class="event-time">${ev.alku_aika}–${ev.loppu_aika}</span> `;
+                        } else if (ev.alku_aika) {
+                            timeStr = `<span class="event-time">${ev.alku_aika}</span> `;
+                        }
+                        el.innerHTML = `${timeStr || 'Tapahtuma'}`;
+                        el.classList.remove('expanded');
+                        el.classList.add('collapsed');
+                    });
+                    // Expand this one
+                    const idx = parseInt(this.getAttribute('data-idx'), 10);
+                    let ev = tapahtumat[idx];
+                    let timeStr = '';
+                    if (ev.alku_aika && ev.loppu_aika) {
+                        timeStr = `<span class="event-time">${ev.alku_aika}–${ev.loppu_aika}</span> `;
+                    } else if (ev.alku_aika) {
+                        timeStr = `<span class="event-time">${ev.alku_aika}</span> `;
+                    }
+                    this.innerHTML = `${timeStr}${ev.nimi}${ev.kuvaus ? `<div class="viikko-event-desc">${ev.kuvaus}</div>` : ''}`;
+                    this.classList.remove('collapsed');
+                    this.classList.add('expanded');
+                });
+            });
+        }
     });
 
     // Päivitetään kuukauden otsikko
