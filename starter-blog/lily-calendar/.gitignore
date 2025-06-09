@@ -4,6 +4,7 @@ backend/__pycache__/
 backend/**/*.pyc
 backend/**/*.pyo
 backend/**/__pycache__/
+backend/database/tapahtumat.db
 
 frontend/etc/
 etc/

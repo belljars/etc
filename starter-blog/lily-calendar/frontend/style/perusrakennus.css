@@ -1,6 +1,8 @@
 html,
 body {
   min-height: 100vh;
+  background-color: var(--tausta-vari);
+  font-family: var(--paa-fontti);
 }
 
 header {
@@ -115,7 +117,7 @@ header {
 
 .tanaan,
 .viikko-tanaan {
-  background-color: #fff8d9;
+  background-color: var(--nykyinen-paiva-vari);
 }
 
 .event-dot,
@@ -143,7 +145,7 @@ header {
   width: 350px;
   border: 1px solid;
   position: relative;
-  background-color: white;
+  background-color: var(--tausta-vari);
 }
 
 .close {
@@ -220,14 +222,23 @@ header {
   word-break: break-word;
   width: calc(100% - 10px);
   min-width: 0;
-  border-left: 3px solid gray;
+  border-left: 3px solid;
+  border-left-color: var(--etc-teksti-vari);
+}
+
+.viikko-event.tapahtuma-tarkea {
+  border-left-color: var(--tarkea-vari);
+}
+
+.viikko-event.tapahtuma-erittain-tarkea {
+  border-left-color: var(--erittain-tarkea-vari);
 }
 
 .viikko-event-desc {
   font-size: 0.92em;
   margin-top: 2px;
   word-break: break-word;
-  color: rgb(112, 112, 112);
+  color: var(--etc-teksti-vari);
   max-height: 5em;
   overflow-y: auto;
   padding-right: 4px;
@@ -252,7 +263,6 @@ header {
 .tapahtuma-lista-item {
   border: 1px solid;
   margin-bottom: 10px;
-  padding: 8px;
   font-size: 1em;
   overflow-y: auto;
 }
@@ -270,8 +280,17 @@ header {
 }
 
 .tapahtuma-lista-content {
-  flex: 1 1 auto;
   min-width: 0;
+  border-left: 10px solid var(--etc-teksti-vari);
+  padding: 10px;
+}
+
+.tapahtuma-lista-item.tapahtuma-tarkea .tapahtuma-lista-content {
+  border-left-color: var(--tarkea-vari);
+}
+
+.tapahtuma-lista-item.tapahtuma-erittain-tarkea .tapahtuma-lista-content {
+  border-left-color: var(--erittain-tarkea-vari);
 }
 
 .tapahtuma-lista-buttons {
@@ -345,6 +364,7 @@ textarea {
   line-height: 1.1;
   word-break: break-word;
   padding: 0;
+  color: var(--juhlapaiva-vari);
 }
 
 .kuukausi-event {
@@ -375,7 +395,6 @@ textarea {
   }
   #tapahtumat-wrapper {
     min-width: 600px;
-    border: 1px solid red;
   }
 }
 
@@ -429,3 +448,18 @@ textarea {
 
 .viikko-event.collapsed .viikko-event-desc { display: none; }
 .viikko-event.expanded .viikko-event-desc { display: block; }
+
+.viikko-event-list {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  max-height: max-content;
+  min-height: 0;
+  margin-top: 2px;
+}
+.viikko-paiva-solu {
+  display: flex;
+  flex-direction: column;
+}
+.viikko-date, .juhla-paiva {
+  flex-shrink: 0;
+}

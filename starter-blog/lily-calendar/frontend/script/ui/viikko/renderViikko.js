@@ -96,7 +96,9 @@ export function renderViikko(date) {
         html += `<div class="viikko-paiva-solu${istanaan ? ' viikko-tanaan' : ''}" data-date="${paivattr}" data-tapahtumat='${JSON.stringify(tapahtumat)}'>
             <div class="viikko-date">${day.getDate()}.${day.getMonth() + 1}.</div>
             ${juhlaHtml}
-            ${tapahtumatHtml}
+            <div class="viikko-event-list">
+              ${tapahtumatHtml}
+            </div>
         </div>`;
     }
     html += '</div></div>';
