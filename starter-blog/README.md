@@ -5,7 +5,7 @@ This is a super simple starter blog project which is WIP.
 - Static HTML pages for posts, about, and contact
 - Easy navigation menu and footer
 - Convert `.txt` files to HTML posts with a Python script
-- Meant for those with little to no coding skills or are just too lazy to write their posts and format them in HTML
+- Writing-focused application
 
 To make a new post:
 1. Write your post in a `.txt` file (see `bird.txt` for an example).
