@@ -1,0 +1,11 @@
+:root {
+    --tausta-vari: white;
+    --teksti-vari: black;
+    --etc-teksti-vari: #cecece;
+    --tarkea-vari: rgba(201, 191, 118, 0.644);
+    --erittain-tarkea-vari: rgb(247, 143, 143);
+    --nykyinen-paiva-vari: #fff8d9;
+    --juhlapaiva-vari: #ac2727;
+
+    --paa-fontti: 'Times New Roman', Times, serif;
+}
