@@ -1,0 +1,16 @@
+set autoindent              # Auto-indent new lines
+set tabsize 4               # Tab width of 4 spaces
+set tabstospaces            # Convert tabs to spaces
+set linenumbers             # Show line numbers
+set mouse                   # Enable mouse support
+set softwrap                # Soft wrap long lines
+set atblanks                # Wrap at whitespace
+set trimblanks             # Remove trailing whitespace on save
+set casesensitive           # Case-sensitive searches by default
+set multibuffer             # Allow opening multiple files
+set nohelp                  # Don't show help at bottom (more space)
+set boldtext                # Use bold instead of reverse video
+set positionlog             # Remember cursor position in files
+set minibar                 # Show minibar instead of two help lines
+set showcursor              # Show cursor position in minibar
+set constantshow            # Constantly show cursor position
